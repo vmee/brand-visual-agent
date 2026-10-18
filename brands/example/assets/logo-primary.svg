@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" width="240" height="60">
+  <rect width="240" height="60" rx="12" fill="#14532D"/>
+  <circle cx="36" cy="30" r="16" fill="#F97316"/>
+  <path d="M30 22 L42 30 L30 38 Z" fill="#FFFFFF"/>
+  <text x="68" y="38" font-family="system-ui, -apple-system, sans-serif" font-size="22" font-weight="bold" fill="#FFFFFF" letter-spacing="1">BRAND</text>
+</svg>

@@ -24,7 +24,7 @@ description: >
 3. 检查资产存在、授权状态和品牌档案；缺少必需信息时只询问会改变结果的关键问题。
 4. 把生成式背景与确定性文字/Logo/受保护资产分开规划。
 5. 创建版本化 DesignSpec，并在调用前校验。
-6. 使用 CLI 执行 generate/render/revise；每个设计方案独立输出。
+6. 使用 CLI 执行 generate/render/revise；每个设计方案独立输出。微调文字或样式时，优先使用 `revise` 避免重新生图。
 7. 运行 validate，读取 manifest 和 quality report。
 8. 只有在产物实际存在且质量状态明确时，才把文件和复核项返回给用户。
 
@@ -42,7 +42,17 @@ description: >
 
 ## CLI 契约
 
-使用 [CLI 契约](references/cli-reference.md) 中的命令和结果判断规则。M1 的 Mock 命令可用于环境、协议和安装验证；遇到 `provider.mock: true` 必须明确说明产物不是可交付视觉作品。
+使用 [CLI 契约](references/cli-reference.md) 中的命令和结果判断规则。
+
+### 真实生成底图策略（宿主 Agent 优先）
+
+- 如果当前宿主 Agent（Codex、WorkBuddy 等）支持在其对话或内置环境中直接生成图片，Agent 应当先利用其自身的生成能力产出纯净背景图暂存（如 `temp-bg.png`）。
+- 然后将该底图传入 CLI 执行确定性图层合成与品牌验收：
+  ```bash
+  brand-visual generate --spec <spec-path> --base-image <temp-bg-path> --json
+  ```
+- 这样能直接使用当前宿主选中的模型，无需在 CLI 中配置额外的第三方生图 API 密钥。
+- 若未使用 `--base-image`，CLI 将回退使用内部 Provider。在 Mock 模式下遇到 `provider.mock: true` 产物仅用于协议与安装验证。
 
 ## 返回结果
 

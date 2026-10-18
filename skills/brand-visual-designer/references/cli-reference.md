@@ -5,7 +5,8 @@ M1 已实现 Mock 模式下的 `doctor`、`capabilities`、`generate`、`validat
 ```text
 brand-visual doctor --json
 brand-visual capabilities --json
-brand-visual generate --spec <path> --json
+brand-visual generate --spec <path> [--base-image <path>] --json
+brand-visual revise --spec <path> --task <path> --patch <path> --json
 brand-visual validate --task <path> --json
 brand-visual version --json
 brand-visual skill status --agent <id> --scope project --json

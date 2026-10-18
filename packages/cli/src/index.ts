@@ -4,9 +4,11 @@ import { constants } from "node:fs";
 import { access, readFile, realpath, stat } from "node:fs/promises";
 import { homedir } from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   BrandVisualError,
   generateTask,
+  reviseTask,
   validateTask,
 } from "@brand-visual/core";
 import { MockImageProvider } from "@brand-visual/provider-mock";
@@ -101,9 +103,10 @@ async function resolveWorkspaceRoot(): Promise<string> {
 async function resolveExistingPath(
   workspaceRoot: string,
   input: string,
+  allowOutsideWorkspace = false,
 ): Promise<string> {
   const candidate = await realpath(path.resolve(workspaceRoot, input));
-  if (!isWithin(workspaceRoot, candidate)) {
+  if (!allowOutsideWorkspace && !isWithin(workspaceRoot, candidate)) {
     throw new BrandVisualError(
       "PATH_OUTSIDE_WORKSPACE",
       "输入路径越过允许的工作目录",
@@ -193,6 +196,48 @@ function emit(result: CliResult): void {
   process.stdout.write(`${JSON.stringify(result)}\n`);
 }
 
+async function isSkillPresent(workspaceRoot: string): Promise<boolean> {
+  // 1. 项目本地目录
+  const projectSkill = path.join(
+    workspaceRoot,
+    "skills/brand-visual-designer/SKILL.md",
+  );
+  try {
+    await access(projectSkill, constants.R_OK);
+    return true;
+  } catch {}
+
+  // 2. 已安装的用户全局技能目录 (~/.<agent>/skills/...)
+  const home = homedir();
+  const knownUserSkills = [
+    path.join(home, ".codex/skills/brand-visual-designer/SKILL.md"),
+    path.join(home, ".workbuddy/skills/brand-visual-designer/SKILL.md"),
+    path.join(home, ".claude/skills/brand-visual-designer/SKILL.md"),
+    path.join(home, ".cursor/skills/brand-visual-designer/SKILL.md"),
+    path.join(home, ".gemini/skills/brand-visual-designer/SKILL.md"),
+    path.join(home, ".config/opencode/skills/brand-visual-designer/SKILL.md"),
+  ];
+
+  for (const candidate of knownUserSkills) {
+    try {
+      await access(candidate, constants.R_OK);
+      return true;
+    } catch {}
+  }
+
+  // 3. 关联的安装源码目录 (跨机或全局安装时的相对路径)
+  try {
+    const cliSource = path.resolve(
+      path.dirname(fileURLToPath(import.meta.url)),
+      "../../../skills/brand-visual-designer/SKILL.md",
+    );
+    await access(cliSource, constants.R_OK);
+    return true;
+  } catch {}
+
+  return false;
+}
+
 async function runDoctor(workspaceRoot: string) {
   const [major = 0, minor = 0] = process.versions.node.split(".").map(Number);
   const nodeSupported =
@@ -203,16 +248,7 @@ async function runDoctor(workspaceRoot: string) {
   } catch {
     workspaceWritable = false;
   }
-  const skillPath = path.join(
-    workspaceRoot,
-    "skills/brand-visual-designer/SKILL.md",
-  );
-  let skillSourcePresent = true;
-  try {
-    await access(skillPath, constants.R_OK);
-  } catch {
-    skillSourcePresent = false;
-  }
+  const skillSourcePresent = await isSkillPresent(workspaceRoot);
   const checks = { nodeSupported, workspaceWritable, skillSourcePresent };
   if (Object.values(checks).some((value) => !value)) {
     throw new BrandVisualError("CONFIG_INVALID", "环境检查未通过", {
@@ -264,11 +300,18 @@ async function runGenerate(arguments_: ParsedArguments, workspaceRoot: string) {
     workspaceRoot,
     spec.output.directory,
   );
+
+  const baseImageOption = arguments_.options.get("base-image");
+  const baseImagePath = baseImageOption
+    ? await resolveExistingPath(workspaceRoot, baseImageOption, true)
+    : undefined;
+
   const result = await generateTask({
     spec,
     provider: new MockImageProvider(),
     workspaceRoot,
     outputDirectory,
+    baseImagePath,
   });
   return success("generate", result.status, {
     taskId: result.taskId,
@@ -279,6 +322,41 @@ async function runGenerate(arguments_: ParsedArguments, workspaceRoot: string) {
       relativeResultPath(workspaceRoot, artifact),
     ),
   });
+}
+
+async function runRevise(arguments_: ParsedArguments, workspaceRoot: string) {
+  const specPath = await resolveExistingPath(
+    workspaceRoot,
+    requireOption(arguments_, "spec"),
+  );
+  const spec = await readDesignSpec(specPath);
+  const taskDirectory = await resolveExistingPath(
+    workspaceRoot,
+    requireOption(arguments_, "task"),
+  );
+  const patchPath = await resolveExistingPath(
+    workspaceRoot,
+    requireOption(arguments_, "patch"),
+    true,
+  );
+
+  let patch: any;
+  try {
+    patch = JSON.parse(await readFile(patchPath, "utf8"));
+  } catch (error) {
+    throw new BrandVisualError("SCHEMA_INVALID", "Patch 不是有效 JSON", {
+      cause: error,
+    });
+  }
+
+  const result = await reviseTask({
+    spec,
+    taskDirectory,
+    patch,
+    workspaceRoot,
+  });
+
+  return success("revise", "completed", { ...result });
 }
 
 async function runValidate(arguments_: ParsedArguments, workspaceRoot: string) {
@@ -371,6 +449,9 @@ async function main(): Promise<void> {
         break;
       case "generate":
         emit(await runGenerate(arguments_, workspaceRoot));
+        break;
+      case "revise":
+        emit(await runRevise(arguments_, workspaceRoot));
         break;
       case "validate":
         emit(await runValidate(arguments_, workspaceRoot));

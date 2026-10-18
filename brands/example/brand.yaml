@@ -20,9 +20,9 @@ assets:
   - id: logo-primary
     role: logo
     path: assets/logo-primary.svg
-    sha256: TO_BE_GENERATED_DURING_SETUP
+    sha256: d6f57b13395617da0c5592981ae703b504bed688f045fabadfc594152a7cc0cc
     protection: exact
-    rightsReview: required
+    rightsReview: approved
 
 rules:
   logo:
