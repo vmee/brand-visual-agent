@@ -15,7 +15,7 @@ const INSTALL_MANIFEST = ".brand-visual-install.json";
 const INSTALLER_VERSION = "0.1.0";
 
 export type AgentId =
-  "codex" | "claude-code" | "cursor" | "gemini-cli" | "opencode";
+  "codex" | "claude-code" | "cursor" | "gemini-cli" | "opencode" | "workbuddy";
 export type InstallScope = "project" | "user";
 export type InstallState =
   "not_installed" | "installed" | "update_available" | "modified" | "conflict";
@@ -74,6 +74,15 @@ export const AGENT_ADAPTERS: Readonly<Record<AgentId, AgentAdapter>> = {
     userSkillRoot: ".config/opencode/skills",
     discoveryCommand: "opencode run",
     officialDocumentation: "https://opencode.ai/docs/skills",
+    verifiedAt: "2026-10-18",
+  },
+  workbuddy: {
+    id: "workbuddy",
+    displayName: "Tencent WorkBuddy",
+    projectSkillRoot: ".workbuddy/skills",
+    userSkillRoot: ".workbuddy/skills",
+    discoveryCommand: "WorkBuddy Desktop > Skills",
+    officialDocumentation: "https://workbuddy.ai/docs/skills",
     verifiedAt: "2026-10-18",
   },
 };

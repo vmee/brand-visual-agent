@@ -54,13 +54,14 @@ afterEach(async () => {
 });
 
 describe("skill installer", () => {
-  it("uses the verified native path for all five adapters", async () => {
+  it("uses the verified native path for all adapters", async () => {
     expect(Object.keys(AGENT_ADAPTERS).sort()).toEqual([
       "claude-code",
       "codex",
       "cursor",
       "gemini-cli",
       "opencode",
+      "workbuddy",
     ]);
     const expected: Record<AgentId, string> = {
       codex: ".codex/skills/brand-visual-designer",
@@ -68,6 +69,7 @@ describe("skill installer", () => {
       cursor: ".cursor/skills/brand-visual-designer",
       "gemini-cli": ".gemini/skills/brand-visual-designer",
       opencode: ".opencode/skills/brand-visual-designer",
+      workbuddy: ".workbuddy/skills/brand-visual-designer",
     };
     for (const agent of Object.keys(AGENT_ADAPTERS) as AgentId[]) {
       const context = await fixture(agent);

@@ -14,7 +14,7 @@ brand-visual skill update --agent <id> --scope project --json
 brand-visual skill uninstall --agent <id> --scope project --json
 ```
 
-安装命令支持 `--dry-run`。Agent ID 为 `codex`、`claude-code`、`cursor`、`gemini-cli` 或 `opencode`；默认作用域是 `project`，也可显式使用 `user`。安装器只更新或卸载自己拥有且当前内容哈希匹配的复制副本。
+安装命令支持 `--dry-run`。Agent ID 为 `codex`、`claude-code`、`cursor`、`gemini-cli`、`opencode` 或 `workbuddy`；默认作用域是 `project`，也可显式使用 `user`。安装器只更新或卸载自己拥有且当前内容哈希匹配的复制副本。
 
 计划接口：
 

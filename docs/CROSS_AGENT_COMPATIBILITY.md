@@ -123,12 +123,13 @@ brand-visual skill uninstall --agent <id> --scope project --json
 
 环境：macOS 27.0.1 / Darwin 27.0.0；日期：2026-10-18。`文档通过` 表示官方路径已核查，不等于本机运行通过。
 
-| Agent       | 实测版本       | 项目路径           | 用户路径                    | 项目安装 | 发现/reference/CLI | 链接     | M1 状态                        |
-| ----------- | -------------- | ------------------ | --------------------------- | -------- | ------------------ | -------- | ------------------------------ |
-| Codex       | 0.163.0        | `.codex/skills`    | `~/.codex/skills`           | 通过     | 通过               | 未测     | supported                      |
-| Claude Code | 2.1.302        | `.claude/skills`   | `~/.claude/skills`          | 通过     | 未登录，未执行     | 文档支持 | blocked/auth                   |
-| Cursor      | 客户端不存在   | `.cursor/skills`   | `~/.cursor/skills`          | 通过     | 无客户端           | 未测     | blocked/client-unavailable     |
-| Gemini CLI  | 0.64.0（临时） | `.gemini/skills`   | `~/.gemini/skills`          | 通过     | 信任后要求认证     | 未测     | blocked/auth                   |
-| OpenCode    | 2.0.11         | `.opencode/skills` | `~/.config/opencode/skills` | 通过     | Provider 404       | 未测     | blocked/provider-configuration |
+| Agent       | 实测版本       | 项目路径            | 用户路径                    | 项目安装 | 发现/reference/CLI | 链接     | M1 状态                        |
+| ----------- | -------------- | ------------------- | --------------------------- | -------- | ------------------ | -------- | ------------------------------ |
+| Codex       | 0.163.0        | `.codex/skills`     | `~/.codex/skills`           | 通过     | 通过               | 未测     | supported                      |
+| Claude Code | 2.1.302        | `.claude/skills`    | `~/.claude/skills`          | 通过     | 未登录，未执行     | 文档支持 | blocked/auth                   |
+| Cursor      | 客户端不存在   | `.cursor/skills`    | `~/.cursor/skills`          | 通过     | 无客户端           | 未测     | blocked/client-unavailable     |
+| Gemini CLI  | 0.64.0（临时） | `.gemini/skills`    | `~/.gemini/skills`          | 通过     | 信任后要求认证     | 未测     | blocked/auth                   |
+| OpenCode    | 2.0.11         | `.opencode/skills`  | `~/.config/opencode/skills` | 通过     | Provider 404       | 未测     | blocked/provider-configuration |
+| WorkBuddy   | 桌面端         | `.workbuddy/skills` | `~/.workbuddy/skills`       | 通过     | 规范兼容           | 未测     | supported/path-verified        |
 
 这里的“项目安装通过”指同一源码经安装器复制后哈希一致。只有 Codex 被标记为 `supported`，因此 M1 出口条件“每个标记支持的平台均发现并调用 CLI”已满足；不能据此宣称五个平台全部兼容通过。
