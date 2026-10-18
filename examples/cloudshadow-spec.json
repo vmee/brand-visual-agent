@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "1.0.0-draft",
+  "task": {
+    "id": "cloudshadow-launch-001",
+    "intent": "product-launch-poster",
+    "locale": "zh-CN"
+  },
+  "brand": {
+    "profile": "brands/cloudshadow/brand.yaml",
+    "requiredRules": ["logo", "text", "claims"]
+  },
+  "canvas": {
+    "width": 1080,
+    "height": 1440,
+    "background": "#F8FAFC"
+  },
+  "creative": {
+    "mode": "generate-background",
+    "brief": "极简通透的科技感光影背景，柔和的浅天蓝色与白色渐变，大面积干净留白，绝不包含任何文字和Logo",
+    "negativeConstraints": ["文字", "字母", "汉字", "Logo", "水印", "杂乱线条"]
+  },
+  "assets": [
+    {
+      "id": "logo-main",
+      "role": "logo",
+      "source": "brands/cloudshadow/assets/logo.svg",
+      "sha256": "3920626eadca33dd9c68ea7c812c14dc090619d2f0f715c86aa8c1a016b93d12",
+      "protection": "exact",
+      "rightsReview": "approved"
+    }
+  ],
+  "layers": [
+    {
+      "id": "background-card",
+      "type": "shape",
+      "zIndex": 5,
+      "frame": { "x": 64, "y": 80, "width": 952, "height": 420 },
+      "style": {
+        "fill": "rgba(255, 255, 255, 0.8)",
+        "borderRadius": 24
+      }
+    },
+    {
+      "id": "headline",
+      "type": "text",
+      "zIndex": 10,
+      "frame": { "x": 112, "y": 140, "width": 856, "height": 200 },
+      "content": "下一代AI企业级协同，重塑工作流",
+      "style": {
+        "fontSize": 64,
+        "fontWeight": 800,
+        "lineHeight": 1.25,
+        "color": "#0F172A"
+      }
+    },
+    {
+      "id": "subhead",
+      "type": "text",
+      "zIndex": 10,
+      "frame": { "x": 112, "y": 340, "width": 856, "height": 80 },
+      "content": "全场景智能驱动 · 2026全新版本现已发布",
+      "style": {
+        "fontSize": 32,
+        "fontWeight": 500,
+        "color": "#0284C7"
+      }
+    },
+    {
+      "id": "logo-layer",
+      "type": "image",
+      "zIndex": 20,
+      "frame": { "x": 112, "y": 1260, "width": 260, "height": 70 },
+      "source": { "kind": "asset", "assetId": "logo-main" },
+      "constraints": { "preserveAspectRatio": true, "protection": "exact" }
+    }
+  ],
+  "variants": [{ "id": "standard-poster" }],
+  "quality": {
+    "requiredChecks": ["canvas.dimensions", "text.exact", "assets.exact"],
+    "manualChecks": ["brand.compliance"]
+  },
+  "output": {
+    "directory": "outputs/cloudshadow-launch-001",
+    "format": "png",
+    "separateVariantFiles": true
+  }
+}

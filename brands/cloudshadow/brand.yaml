@@ -1,0 +1,37 @@
+schemaVersion: 1.0.0-draft
+
+id: cloudshadow
+displayName: 云影科技 (CloudShadow)
+locale: zh-CN
+
+colors:
+  primary: "#0F172A"      # 科技深蓝
+  accent: "#0284C7"       # 天空蓝
+  secondary: "#38BDF8"    # 浅天蓝
+  surface: "#F8FAFC"      # 浅底色
+  text: "#0F172A"         # 标题文字色
+
+typography:
+  headingFamily: "PingFang SC, Microsoft YaHei, system-ui, sans-serif"
+  bodyFamily: "PingFang SC, Microsoft YaHei, system-ui, sans-serif"
+  fallbackPolicy: default
+
+assets:
+  - id: logo-main
+    role: logo
+    path: brands/cloudshadow/assets/logo.svg
+    sha256: 3920626eadca33dd9c68ea7c812c14dc090619d2f0f715c86aa8c1a016b93d12
+    protection: exact
+    rightsReview: approved
+
+rules:
+  logo:
+    preserveAspectRatio: true
+    allowRecolor: false
+    allowGenerativeRedraw: false
+    minimumClearSpacePx: 32
+  text:
+    requireExactCopy: true
+    allowGeneratedTextInFinalArtwork: false
+  claims:
+    allowUnverifiedFacts: false

@@ -1,0 +1,72 @@
+schemaVersion: 1.0.0-draft
+
+id: qinghe
+displayName: 青禾母婴·月嫂到家
+locale: zh-CN
+website: https://qinghemuying.cn
+
+colors:
+  primary: "#189B84"       # 青禾青绿（专业、呵护、安心）
+  primaryDark: "#107060"   # 深青绿
+  accent: "#F97316"        # 活力暖橙（用于高光步骤、标签、转化引导）
+  accentHover: "#EA580C"
+  surface: "#EBF8F6"       # 浅薄荷底色
+  card: "#FFFFFF"          # 内容背板纯白
+  text: "#111827"          # 标题正文字色
+
+typography:
+  headingFamily: "PingFang SC, 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+  bodyFamily: "PingFang SC, 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif"
+  fallbackPolicy: default
+
+assets:
+  - id: logo-icon-color
+    role: logo
+    path: brands/qinghe/assets/logo.png
+    sha256: 6ede332bfd1d7235780d7283c9ffb071dcedc5a9805d540b8155a9819b2d6030
+    protection: exact
+    rightsReview: approved
+    usage: "小尺寸图标、头像、胶囊标签等场景"
+
+  - id: logo-icon-white
+    role: logo
+    path: brands/qinghe/assets/logo-white.png
+    sha256: 4e94c2930d20215f5ad60cd2e1704444d174ccecbafe8a4b27abd6f589b8c366
+    protection: exact
+    rightsReview: approved
+    usage: "深色背景小尺寸图标"
+
+  - id: logo-horizontal-color
+    role: logo
+    path: brands/qinghe/assets/logo-horizontal.png
+    sha256: f3892dfd0a7ac2727131d5f95a16417c1f03d6f114c21a741f402fc1c6b57dbd
+    protection: exact
+    rightsReview: approved
+    usage: "浅色/白色背景横版标准主Logo，包含中英文全称"
+
+  - id: logo-horizontal-white
+    role: logo
+    path: brands/qinghe/assets/logo-horizontal-white.png
+    sha256: fccb5fdb7a370bb013c4d17fcb114181f40493bee55c0b002a983a9ce0dd9e04
+    protection: exact
+    rightsReview: approved
+    usage: "深色/摄影实景底图横版反白主Logo"
+
+rules:
+  logo:
+    preserveAspectRatio: true
+    allowRecolor: false
+    allowGenerativeRedraw: false
+    minimumClearSpacePx: 24
+  text:
+    requireExactCopy: true
+    allowGeneratedTextInFinalArtwork: false
+  claims:
+    allowUnverifiedFacts: false
+
+templates:
+  socialCover:
+    width: 1080
+    height: 1440
+    aspectRatio: "3:4"
+    platform: "xiaohongshu"

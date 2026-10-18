@@ -1,0 +1,131 @@
+{
+  "schemaVersion": "1.0.0-draft",
+  "task": {
+    "id": "qinghe-sop-cover-001",
+    "intent": "social-cover",
+    "locale": "zh-CN"
+  },
+  "brand": {
+    "profile": "brands/qinghe/brand.yaml",
+    "requiredRules": ["logo", "text", "claims"]
+  },
+  "canvas": {
+    "width": 1080,
+    "height": 1440,
+    "background": "#EBF8F6"
+  },
+  "creative": {
+    "mode": "generate-background",
+    "brief": "柔和清新的母婴护理氛围背景，浅薄荷绿渐变与微光质感，整洁、舒适、温暖，留出中间和顶部大量排版空间，不要画出任何文字或杂乱图标",
+    "negativeConstraints": ["文字", "字母", "汉字", "Logo", "水印", "杂乱线条"]
+  },
+  "assets": [
+    {
+      "id": "logo-color",
+      "role": "logo",
+      "source": "brands/qinghe/assets/logo.png",
+      "sha256": "6ede332bfd1d7235780d7283c9ffb071dcedc5a9805d540b8155a9819b2d6030",
+      "protection": "exact",
+      "rightsReview": "approved"
+    }
+  ],
+  "layers": [
+    {
+      "id": "brand-bar-bg",
+      "type": "shape",
+      "zIndex": 2,
+      "frame": { "x": 64, "y": 64, "width": 420, "height": 72 },
+      "style": {
+        "fill": "#FFFFFF",
+        "borderRadius": 36
+      }
+    },
+    {
+      "id": "brand-logo",
+      "type": "image",
+      "zIndex": 5,
+      "frame": { "x": 80, "y": 74, "width": 40, "height": 52 },
+      "source": { "kind": "asset", "assetId": "logo-color" },
+      "constraints": { "preserveAspectRatio": true, "protection": "exact" }
+    },
+    {
+      "id": "brand-name-text",
+      "type": "text",
+      "zIndex": 6,
+      "frame": { "x": 136, "y": 78, "width": 320, "height": 48 },
+      "content": "青禾母婴 · 月嫂到家",
+      "style": {
+        "fontSize": 28,
+        "fontWeight": 700,
+        "color": "#189B84"
+      }
+    },
+    {
+      "id": "main-card",
+      "type": "shape",
+      "zIndex": 10,
+      "frame": { "x": 64, "y": 180, "width": 952, "height": 460 },
+      "style": {
+        "fill": "#FFFFFF",
+        "borderRadius": 28
+      }
+    },
+    {
+      "id": "headline-tag",
+      "type": "shape",
+      "zIndex": 12,
+      "frame": { "x": 112, "y": 230, "width": 260, "height": 56 },
+      "style": {
+        "fill": "#F97316",
+        "borderRadius": 12
+      }
+    },
+    {
+      "id": "headline-tag-text",
+      "type": "text",
+      "zIndex": 15,
+      "frame": { "x": 136, "y": 240, "width": 220, "height": 40 },
+      "content": "官方SOP标准",
+      "style": {
+        "fontSize": 28,
+        "fontWeight": 700,
+        "color": "#FFFFFF"
+      }
+    },
+    {
+      "id": "headline",
+      "type": "text",
+      "zIndex": 15,
+      "frame": { "x": 112, "y": 320, "width": 856, "height": 180 },
+      "content": "拆解北京靠谱月嫂机构服务流程",
+      "style": {
+        "fontSize": 56,
+        "fontWeight": 800,
+        "lineHeight": 1.25,
+        "color": "#111827"
+      }
+    },
+    {
+      "id": "subhead",
+      "type": "text",
+      "zIndex": 15,
+      "frame": { "x": 112, "y": 520, "width": 856, "height": 60 },
+      "content": "每一步，都只为让您的月子更安心更省心",
+      "style": {
+        "fontSize": 32,
+        "fontWeight": 600,
+        "color": "#189B84"
+      }
+    }
+  ],
+  "variants": [{ "id": "sop-cover" }],
+  "quality": {
+    "requiredChecks": ["canvas.dimensions", "text.exact", "assets.exact"],
+    "manualChecks": ["brand.compliance"]
+  },
+  "output": {
+    "directory": "outputs/qinghe-sop-cover-001",
+    "format": "png",
+    "separateVariantFiles": true
+  }
+}
