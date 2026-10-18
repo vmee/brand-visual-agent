@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://brand-visual.local/schemas/quality-report/1.0.0-draft",
+  "title": "QualityReport",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "status", "checks"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0-draft" },
+    "status": { "enum": ["passed", "failed", "needs_review"] },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "status"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "status": { "enum": ["passed", "failed", "needs_review"] },
+          "message": { "type": "string" },
+          "evidence": { "type": "object", "additionalProperties": true }
+        }
+      }
+    }
+  }
+}

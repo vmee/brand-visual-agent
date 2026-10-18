@@ -1,0 +1,7 @@
+node_modules/
+dist/
+coverage/
+outputs/
+.brand-visual-cache/
+test-evidence/**/runs/
+pnpm-lock.yaml

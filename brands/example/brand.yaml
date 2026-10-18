@@ -1,0 +1,41 @@
+schemaVersion: 1.0.0-draft
+
+id: example-brand
+displayName: 示例品牌（虚构）
+locale: zh-CN
+
+colors:
+  primary: "#14532D"
+  secondary: "#F5E9D5"
+  accent: "#F97316"
+  text: "#17202A"
+
+typography:
+  # 字体只是候选；实施前必须确认安装、CJK 覆盖和商业授权。
+  headingFamily: "Example CJK Sans"
+  bodyFamily: "Example CJK Sans"
+  fallbackPolicy: fail
+
+assets:
+  - id: logo-primary
+    role: logo
+    path: assets/logo-primary.svg
+    sha256: TO_BE_GENERATED_DURING_SETUP
+    protection: exact
+    rightsReview: required
+
+rules:
+  logo:
+    preserveAspectRatio: true
+    allowRecolor: false
+    allowGenerativeRedraw: false
+    minimumClearSpacePx: 32
+  text:
+    requireExactCopy: true
+    allowGeneratedTextInFinalArtwork: false
+  claims:
+    allowUnverifiedFacts: false
+
+notes:
+  - 本文件只使用虚构信息。
+  - 将真实资产放入仓库前，先核对授权并生成 SHA-256。

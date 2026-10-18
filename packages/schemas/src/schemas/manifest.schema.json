@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://brand-visual.local/schemas/manifest/1.0.0-draft",
+  "title": "Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "taskId",
+    "status",
+    "provider",
+    "createdAt",
+    "artifacts"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0-draft" },
+    "taskId": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["completed", "failed", "needs_review"] },
+    "provider": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "mock", "capabilitySnapshotId"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "mock": { "type": "boolean" },
+        "capabilitySnapshotId": { "type": "string", "minLength": 1 }
+      }
+    },
+    "createdAt": { "type": "string", "minLength": 1 },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "sha256", "kind"],
+        "properties": {
+          "path": { "type": "string", "minLength": 1 },
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "kind": { "enum": ["image", "spec", "quality-report", "run-summary"] }
+        }
+      }
+    }
+  }
+}

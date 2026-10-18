@@ -1,0 +1,15 @@
+.env
+.env.*
+!.env.example
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+outputs/
+.brand-visual-cache/
+*.log
+.DS_Store
+
+# M1 local evidence artifacts
+test-evidence/**/runs/

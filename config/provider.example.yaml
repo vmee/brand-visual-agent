@@ -1,0 +1,25 @@
+schemaVersion: 1.0.0-draft
+
+provider:
+  id: openai
+  apiKeyEnv: OPENAI_API_KEY
+  # 不在示例中锁定模型。实现应解析环境变量后运行能力探测。
+  modelFromEnv: OPENAI_IMAGE_MODEL
+  requireCapabilityProbe: true
+
+execution:
+  timeoutMs: 120000
+  maxAttempts: 3
+  # 正式值应在 M2 基准、API 限流和预算确认后决定。
+  retryPolicy: bounded-exponential
+  allowSilentFallback: false
+
+logging:
+  redactHeaders:
+    - authorization
+  includeBase64Payloads: false
+  includePromptText: false
+
+liveTests:
+  enabledFromEnv: BRAND_VISUAL_LIVE_API_TESTS
+  maxCostFromEnv: BRAND_VISUAL_MAX_TEST_COST

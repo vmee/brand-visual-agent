@@ -1,0 +1,82 @@
+{
+  "schemaVersion": "1.0.0-draft",
+  "task": {
+    "id": "example-social-cover-001",
+    "intent": "social-cover",
+    "locale": "zh-CN"
+  },
+  "brand": {
+    "profile": "brands/example/brand.yaml",
+    "requiredRules": ["logo", "text", "claims"]
+  },
+  "canvas": {
+    "width": 1080,
+    "height": 1440,
+    "background": "#F5E9D5"
+  },
+  "creative": {
+    "mode": "generate-background",
+    "brief": "温暖、可信、留出清晰的标题区域；背景中不要生成任何文字或 Logo",
+    "negativeConstraints": ["不要出现文字", "不要出现 Logo", "不要虚构认证标识"]
+  },
+  "assets": [
+    {
+      "id": "logo-primary",
+      "role": "logo",
+      "source": "brands/example/assets/logo-primary.svg",
+      "sha256": "TO_BE_GENERATED_DURING_SETUP",
+      "protection": "exact",
+      "rightsReview": "required"
+    }
+  ],
+  "layers": [
+    {
+      "id": "generated-background",
+      "type": "image",
+      "zIndex": 0,
+      "frame": { "x": 0, "y": 0, "width": 1080, "height": 1440 },
+      "source": { "kind": "provider-output" }
+    },
+    {
+      "id": "headline",
+      "type": "text",
+      "zIndex": 10,
+      "frame": { "x": 96, "y": 160, "width": 888, "height": 260 },
+      "content": "让品牌视觉更准确，也更可复用",
+      "style": {
+        "fontFamily": "Example CJK Sans",
+        "fontSize": 72,
+        "fontWeight": 700,
+        "lineHeight": 1.18,
+        "color": "#17202A",
+        "align": "left",
+        "overflow": "fail"
+      }
+    },
+    {
+      "id": "logo",
+      "type": "image",
+      "zIndex": 20,
+      "frame": { "x": 96, "y": 1240, "width": 240, "height": 96 },
+      "source": { "kind": "asset", "assetId": "logo-primary" },
+      "constraints": { "preserveAspectRatio": true, "protection": "exact" }
+    }
+  ],
+  "variants": [{ "id": "warm-editorial" }, { "id": "clean-modern" }],
+  "quality": {
+    "requiredChecks": [
+      "canvas.dimensions",
+      "text.exact",
+      "text.overflow",
+      "asset.logo.hash",
+      "layout.safe-area",
+      "artifact.complete"
+    ],
+    "manualChecks": ["rights.logo", "visual.brand-consistency"]
+  },
+  "output": {
+    "directory": "outputs/example-social-cover-001",
+    "format": "png",
+    "separateVariantFiles": true
+  }
+}
