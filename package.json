@@ -14,11 +14,13 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "schema:types": "node scripts/generate-schema-types.mjs",
+    "secrets:scan": "node scripts/scan-secrets.mjs",
     "test": "pnpm run build && vitest run",
     "typecheck": "tsc -b --pretty false"
   },
   "devDependencies": {
     "@brand-visual/cli": "workspace:*",
+    "@brand-visual/installer": "workspace:*",
     "@brand-visual/schemas": "workspace:*",
     "@types/node": "26.6.5",
     "json-schema-to-typescript": "16.0.0",

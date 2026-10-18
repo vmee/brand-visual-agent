@@ -11,6 +11,11 @@ export type ErrorCode =
   | "IO_ERROR"
   | "PATH_OUTSIDE_WORKSPACE"
   | "OUTPUT_CONFLICT"
+  | "AGENT_UNSUPPORTED"
+  | "SKILL_SOURCE_INVALID"
+  | "INSTALL_CONFLICT"
+  | "INSTALL_MODIFIED"
+  | "INSTALL_NOT_FOUND"
   | "COMMAND_INVALID";
 
 export class BrandVisualError extends Error {

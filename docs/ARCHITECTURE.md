@@ -41,6 +41,7 @@ Codex / Claude Code / Cursor / Gemini CLI / OpenCode
 | --------------- | ------------------------------------------ | -------------------------------------------- |
 | Skill           | 触发条件、工作流、CLI 契约、结果核查       | API 请求、图像处理、硬编码安装路径           |
 | CLI             | 参数解析、配置加载、调用用例、机器可读输出 | 业务规则散落、Agent 专有分支                 |
+| Installer       | Agent adapter、Skill 复制、所有权/哈希清单 | 视觉任务执行、Core 业务规则、Skill 分叉      |
 | Core            | 任务状态机、用例编排、策略和端口           | 直接依赖 OpenAI SDK、Playwright 或具体 Agent |
 | Schemas         | DesignSpec、manifest、报告和错误协议       | 业务执行                                     |
 | Brand Manager   | 品牌配置验证、资产解析、哈希和规则         | 创意生成                                     |
@@ -55,6 +56,7 @@ Codex / Claude Code / Cursor / Gemini CLI / OpenCode
 ```text
 skills/brand-visual-designer/
 packages/cli/
+packages/installer/
 packages/core/
 packages/providers/
 packages/renderer/
@@ -68,7 +70,7 @@ tests/{unit,integration,e2e,compatibility}/
 docs/
 ```
 
-包依赖方向应为：`cli -> core -> ports/types`，`providers/renderer -> core ports`。Core 不反向依赖 CLI 或适配器。可使用依赖注入在组合根绑定实现。
+包依赖方向应为：视觉任务走 `cli -> core -> schemas/ports`，Skill 生命周期走 `cli -> installer`，`providers/renderer -> core ports`。Installer 与 Core 互不依赖；Core 不反向依赖 CLI 或任何适配器。可使用依赖注入在组合根绑定实现。
 
 ## 5. 主流程
 

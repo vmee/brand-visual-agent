@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@brand-visual/core": "workspace:*",
+    "@brand-visual/installer": "workspace:*",
     "@brand-visual/provider-mock": "workspace:*",
     "@brand-visual/schemas": "workspace:*"
   }

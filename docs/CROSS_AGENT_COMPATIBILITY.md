@@ -20,7 +20,7 @@ skills/brand-visual-designer/
 └── references/
 ```
 
-安装器读取 adapter registry，解析目标 Agent 当前版本的安装位置，然后复制或在验证后链接该目录。安装副本包含源版本和内容哈希；CI 检查所有打包产物均来自唯一源。
+安装器读取 `packages/installer` 中的 adapter registry，解析目标 Agent 当前版本的安装位置，然后复制该目录。安装副本包含源哈希、逐文件哈希、时间、Agent 和作用域。M1 未开放链接模式。
 
 禁止：
 
@@ -30,27 +30,27 @@ skills/brand-visual-designer/
 
 ## 3. 路径不是永久常量
 
-历史讨论曾给出诸如 `.agents/skills/`、`.claude/skills/` 等路径。它们只能作为调查候选，不是本项目的已确认常量。Agent 产品会更新，项目级、用户级、工作区级和插件级安装方式也可能不同。
+Agent 产品会更新，项目级、用户级、工作区级和插件级安装方式也可能不同。M1 在 2026-10-18 依据各平台官方文档核查路径，并集中放入 adapter registry；每次升级目标 Agent 时必须重新核查。
 
 安装器应使用类似以下注册表语义，而非把路径散落在业务代码中：
 
 ```yaml
 agent: gemini-cli
 detection:
-  commands: []
+  command: gemini skills list
 installScopes:
   project:
-    status: unverified
-    pathTemplate: null
+    status: docs-verified
+    pathTemplate: .gemini/skills/<name>
   user:
-    status: unverified
-    pathTemplate: null
-verifiedAgainst: null
-verifiedAt: null
-officialSource: null
+    status: docs-verified
+    pathTemplate: ~/.gemini/skills/<name>
+verifiedAgainst: 0.64.0
+verifiedAt: 2026-10-18
+officialSource: https://geminicli.com/docs/cli/using-agent-skills/
 ```
 
-M1 实时核查后才填写真实值，并用版本范围和测试证据约束。
+替代兼容目录（例如 `.agents/skills`）不是本安装器的默认目标，避免同一项目产生重复发现和优先级歧义。
 
 ## 4. 每个平台的核查清单
 
@@ -69,35 +69,37 @@ M1 实时核查后才填写真实值，并用版本范围和测试证据约束�
 
 ## 5. 当前证据与限制
 
-截至本初始化包生成时，可确认的方向性事实包括：开放 Agent Skills 使用 `SKILL.md` 作为入口；OpenAI 当前文档说明 Skills 与开放规范兼容；Google 的 Gemini CLI codelab 展示过项目内 `.agents/skills/<name>/SKILL.md`。这些信息只能作为 M1 调查起点，仍需针对实际安装版本核查。
+核查日期：2026-10-18。所有路径来自当日官方文档；实际运行结果另见兼容矩阵和 `test-evidence/m1/compatibility/`。
 
 官方核查入口：
 
 - Agent Skills：<https://agentskills.io/specification>
-- OpenAI Skills：<https://developers.openai.com/api/docs/guides/tools-skills>
-- Gemini CLI codelab：<https://codelabs.developers.google.com/gemini-cli/how-to-create-agent-skills-for-gemini-cli>
-- 其他平台：M1 必须从其当前官方文档入口重新定位，不能依赖本包写死的深层 URL。
+- OpenAI Skills 与 Codex：<https://developers.openai.com/api/docs/guides/tools-skills>、<https://developers.openai.com/blog/eval-skills>
+- Claude Code：<https://code.claude.com/docs/en/skills>
+- Cursor：<https://cursor.com/help/customization/skills>
+- Gemini CLI：<https://geminicli.com/docs/cli/using-agent-skills/>
+- OpenCode：<https://opencode.ai/docs/skills>
 
-本包未宣称已在任何平台完成真实安装测试。
+结论：五个平台均由官方文档确认支持 `SKILL.md`。本机仅 Codex 完成了“发现、读取 reference、调用 Mock CLI、生成并校验 fixture”的完整运行验证；其余平台的实际执行限制明确记录为 blocked，不计为兼容通过。
 
 ## 6. 安装器行为
 
-建议命令（仍待实现）：
+已实现命令：
 
 ```text
-brand-visual skill status --agent <id>
-brand-visual skill install --agent <id> --scope project
-brand-visual skill update --agent <id> --scope project
-brand-visual skill uninstall --agent <id> --scope project
+brand-visual skill status --agent <id> --scope project --json
+brand-visual skill install --agent <id> --scope project --json
+brand-visual skill update --agent <id> --scope project --json
+brand-visual skill uninstall --agent <id> --scope project --json
 ```
 
 安全规则：
 
-- 先探测后写入，打印将要使用的精确目标。
+- `status`/`--dry-run` 先检查并返回精确目标。
 - 默认项目级，不根据当前目录盲目向上寻找系统范围路径。
 - 记录安装清单：源哈希、目标文件、时间、Agent/安装器版本。
 - 已存在且非本安装器拥有的目录不能覆盖。
-- 卸载只删除清单中、且当前哈希仍匹配的文件；用户修改过的内容保留并报告。
+- 更新和卸载要求目录文件集合与清单逐项哈希完全匹配；用户修改或添加过内容时拒绝操作。
 - 支持 `--dry-run`；自动化模式的所有选择必须显式参数化。
 
 ## 7. 能力降级策略
@@ -117,12 +119,16 @@ brand-visual skill uninstall --agent <id> --scope project
 - Major 不兼容时停止并给出升级路径。
 - Adapter registry 与 Skill 源独立版本化，但发布包固定二者组合。
 
-## 9. 兼容矩阵模板
+## 9. M1 兼容矩阵
 
-| Agent       | 版本   | OS   | Skill 规范 | 项目路径 | 用户路径 | 发现 | CLI  | 链接 | 状态       | 证据日期 |
-| ----------- | ------ | ---- | ---------- | -------- | -------- | ---- | ---- | ---- | ---------- | -------- |
-| Codex       | 待核查 | 待测 | 待核查     | 待核查   | 待核查   | 未测 | 未测 | 未测 | unverified | —        |
-| Claude Code | 待核查 | 待测 | 待核查     | 待核查   | 待核查   | 未测 | 未测 | 未测 | unverified | —        |
-| Cursor      | 待核查 | 待测 | 待核查     | 待核查   | 待核查   | 未测 | 未测 | 未测 | unverified | —        |
-| Gemini CLI  | 待核查 | 待测 | 待核查     | 待核查   | 待核查   | 未测 | 未测 | 未测 | unverified | —        |
-| OpenCode    | 待核查 | 待测 | 待核查     | 待核查   | 待核查   | 未测 | 未测 | 未测 | unverified | —        |
+环境：macOS 27.0.1 / Darwin 27.0.0；日期：2026-10-18。`文档通过` 表示官方路径已核查，不等于本机运行通过。
+
+| Agent       | 实测版本       | 项目路径           | 用户路径                    | 项目安装 | 发现/reference/CLI | 链接     | M1 状态                        |
+| ----------- | -------------- | ------------------ | --------------------------- | -------- | ------------------ | -------- | ------------------------------ |
+| Codex       | 0.163.0        | `.codex/skills`    | `~/.codex/skills`           | 通过     | 通过               | 未测     | supported                      |
+| Claude Code | 2.1.302        | `.claude/skills`   | `~/.claude/skills`          | 通过     | 未登录，未执行     | 文档支持 | blocked/auth                   |
+| Cursor      | 客户端不存在   | `.cursor/skills`   | `~/.cursor/skills`          | 通过     | 无客户端           | 未测     | blocked/client-unavailable     |
+| Gemini CLI  | 0.64.0（临时） | `.gemini/skills`   | `~/.gemini/skills`          | 通过     | 信任后要求认证     | 未测     | blocked/auth                   |
+| OpenCode    | 2.0.11         | `.opencode/skills` | `~/.config/opencode/skills` | 通过     | Provider 404       | 未测     | blocked/provider-configuration |
+
+这里的“项目安装通过”指同一源码经安装器复制后哈希一致。只有 Codex 被标记为 `supported`，因此 M1 出口条件“每个标记支持的平台均发现并调用 CLI”已满足；不能据此宣称五个平台全部兼容通过。

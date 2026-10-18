@@ -2,6 +2,7 @@
 
 import { constants } from "node:fs";
 import { access, readFile, realpath, stat } from "node:fs/promises";
+import { homedir } from "node:os";
 import path from "node:path";
 import {
   BrandVisualError,
@@ -9,6 +10,17 @@ import {
   validateTask,
 } from "@brand-visual/core";
 import { MockImageProvider } from "@brand-visual/provider-mock";
+import {
+  AGENT_ADAPTERS,
+  getInstallStatus,
+  installSkill,
+  SkillInstallError,
+  uninstallSkill,
+  updateSkill,
+  type AgentId,
+  type InstallContext,
+  type InstallScope,
+} from "@brand-visual/installer";
 import type { CliResult, DesignSpec } from "@brand-visual/schemas";
 import {
   formatValidationErrors,
@@ -21,18 +33,30 @@ const CLI_VERSION = "0.1.0";
 
 interface ParsedArguments {
   command: string | undefined;
+  subcommand: string | undefined;
   json: boolean;
+  dryRun: boolean;
   options: Map<string, string>;
 }
 
 function parseArguments(argv: string[]): ParsedArguments {
   const command = argv[0];
+  const subcommand = command === "skill" ? argv[1] : undefined;
   const options = new Map<string, string>();
   let json = false;
-  for (let index = 1; index < argv.length; index += 1) {
+  let dryRun = false;
+  for (
+    let index = command === "skill" ? 2 : 1;
+    index < argv.length;
+    index += 1
+  ) {
     const argument = argv[index];
     if (argument === "--json") {
       json = true;
+      continue;
+    }
+    if (argument === "--dry-run") {
+      dryRun = true;
       continue;
     }
     if (argument?.startsWith("--")) {
@@ -52,7 +76,7 @@ function parseArguments(argv: string[]): ParsedArguments {
       `无法识别的参数：${argument ?? ""}`,
     );
   }
-  return { command, json, options };
+  return { command, subcommand, json, dryRun, options };
 }
 
 function requireOption(arguments_: ParsedArguments, key: string): string {
@@ -266,9 +290,71 @@ async function runValidate(arguments_: ParsedArguments, workspaceRoot: string) {
   return success("validate", result.status, { ...result });
 }
 
+function parseAgent(input: string): AgentId {
+  if (Object.hasOwn(AGENT_ADAPTERS, input)) return input as AgentId;
+  throw new BrandVisualError("AGENT_UNSUPPORTED", `不支持的 Agent：${input}`);
+}
+
+function parseScope(input: string | undefined): InstallScope {
+  if (!input || input === "project") return "project";
+  if (input === "user") return "user";
+  throw new BrandVisualError("COMMAND_INVALID", `不支持的安装作用域：${input}`);
+}
+
+async function createInstallContext(
+  arguments_: ParsedArguments,
+  workspaceRoot: string,
+): Promise<InstallContext> {
+  const sourceInput =
+    arguments_.options.get("source") ?? "skills/brand-visual-designer";
+  return {
+    agent: parseAgent(requireOption(arguments_, "agent")),
+    scope: parseScope(arguments_.options.get("scope")),
+    projectRoot: workspaceRoot,
+    homeRoot: homedir(),
+    sourceDirectory: await resolveExistingPath(workspaceRoot, sourceInput),
+    dryRun: arguments_.dryRun,
+  };
+}
+
+async function runSkill(arguments_: ParsedArguments, workspaceRoot: string) {
+  const context = await createInstallContext(arguments_, workspaceRoot);
+  switch (arguments_.subcommand) {
+    case "status":
+      return success("skill status", "passed", {
+        ...(await getInstallStatus(context)),
+        adapter: AGENT_ADAPTERS[context.agent],
+      });
+    case "install":
+      return success("skill install", "completed", {
+        ...(await installSkill(context)),
+        adapter: AGENT_ADAPTERS[context.agent],
+      });
+    case "update":
+      return success("skill update", "completed", {
+        ...(await updateSkill(context)),
+        adapter: AGENT_ADAPTERS[context.agent],
+      });
+    case "uninstall":
+      return success("skill uninstall", "completed", {
+        ...(await uninstallSkill(context)),
+        adapter: AGENT_ADAPTERS[context.agent],
+      });
+    default:
+      throw new BrandVisualError(
+        "COMMAND_INVALID",
+        "支持的 skill 子命令：status、install、update、uninstall",
+      );
+  }
+}
+
 async function main(): Promise<void> {
   try {
     const arguments_ = parseArguments(process.argv.slice(2));
+    if (arguments_.command === "--version") {
+      process.stdout.write(`${CLI_VERSION}\n`);
+      return;
+    }
     if (!arguments_.json) {
       throw new BrandVisualError(
         "COMMAND_INVALID",
@@ -289,17 +375,32 @@ async function main(): Promise<void> {
       case "validate":
         emit(await runValidate(arguments_, workspaceRoot));
         break;
+      case "version":
+        emit(
+          success("version", "passed", {
+            cliVersion: CLI_VERSION,
+            schemaVersion: SCHEMA_VERSION,
+          }),
+        );
+        break;
+      case "skill":
+        emit(await runSkill(arguments_, workspaceRoot));
+        break;
       default:
         throw new BrandVisualError(
           "COMMAND_INVALID",
-          "支持的命令：doctor、capabilities、generate、validate",
+          "支持的命令：doctor、capabilities、generate、validate、version、skill",
         );
     }
   } catch (error) {
     const normalized =
       error instanceof BrandVisualError
         ? error
-        : new BrandVisualError("IO_ERROR", "发生未处理错误", { cause: error });
+        : error instanceof SkillInstallError
+          ? new BrandVisualError(error.code, error.message, { cause: error })
+          : new BrandVisualError("IO_ERROR", "发生未处理错误", {
+              cause: error,
+            });
     process.stderr.write(`[${normalized.code}] ${normalized.message}\n`);
     emit(failure(normalized));
     process.exitCode = process.exitCode || 1;

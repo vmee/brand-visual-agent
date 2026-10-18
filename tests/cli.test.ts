@@ -1,4 +1,4 @@
-import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { cp, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -24,6 +24,16 @@ const temporaryDirectories: string[] = [];
 async function createWorkspace(): Promise<string> {
   const directory = await mkdtemp(path.join(tmpdir(), "brand-visual-m1-"));
   temporaryDirectories.push(directory);
+  return directory;
+}
+
+async function createWorkspaceWithSkill(): Promise<string> {
+  const directory = await createWorkspace();
+  const target = path.join(directory, "skills/brand-visual-designer");
+  await mkdir(path.dirname(target), { recursive: true });
+  await cp(path.join(repositoryRoot, "skills/brand-visual-designer"), target, {
+    recursive: true,
+  });
   return directory;
 }
 
@@ -65,6 +75,66 @@ describe("brand-visual CLI", () => {
       mock: true,
       generate: true,
       edit: false,
+    });
+  });
+
+  it("reports its version in machine-readable form", () => {
+    const result = runCli(repositoryRoot, "version", "--json");
+    expect(result.status).toBe(0);
+    expect(result.json).toMatchObject({
+      ok: true,
+      command: "version",
+      data: { cliVersion: "0.1.0" },
+    });
+  });
+
+  it("installs, reports, and safely uninstalls a project skill", async () => {
+    const workspace = await createWorkspaceWithSkill();
+    const installed = runCli(
+      workspace,
+      "skill",
+      "install",
+      "--agent",
+      "codex",
+      "--scope",
+      "project",
+      "--json",
+    );
+    expect(installed.status).toBe(0);
+    expect(installed.json).toMatchObject({
+      ok: true,
+      command: "skill install",
+      data: { state: "installed", changed: true },
+    });
+
+    const status = runCli(
+      workspace,
+      "skill",
+      "status",
+      "--agent",
+      "codex",
+      "--json",
+    );
+    expect(status.json).toMatchObject({
+      ok: true,
+      data: {
+        state: "installed",
+        adapter: { projectSkillRoot: ".codex/skills" },
+      },
+    });
+
+    const uninstalled = runCli(
+      workspace,
+      "skill",
+      "uninstall",
+      "--agent",
+      "codex",
+      "--json",
+    );
+    expect(uninstalled.status).toBe(0);
+    expect(uninstalled.json.data).toMatchObject({
+      state: "not_installed",
+      changed: true,
     });
   });
 

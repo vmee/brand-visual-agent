@@ -9,6 +9,8 @@
 
 ## M1：跨 Agent Skill 与 CLI 契约
 
+状态（2026-10-18）：`complete-with-declared-blockers`。Codex 完整通过；Claude Code、Cursor、Gemini CLI、OpenCode 的外部环境阻塞已记录，解除后须复跑。证据见 `test-evidence/m1/reports/2026-10-18-completion.md`。
+
 ### 目标
 
 五个目标 Agent 使用同一 Skill 源，通过 Mock CLI 完成相同任务协议。

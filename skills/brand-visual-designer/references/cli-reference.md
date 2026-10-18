@@ -1,13 +1,20 @@
 # CLI 契约
 
-M1 已实现 Mock 模式下的 `doctor`、`capabilities`、`generate` 和 `validate`。`render` 与 `revise` 仍是 M3 计划接口；真实 Provider 从 M2 开始接入。
+M1 已实现 Mock 模式下的 `doctor`、`capabilities`、`generate`、`validate` 和 Skill 安装管理。`render` 与 `revise` 仍是 M3 计划接口；真实 Provider 从 M2 开始接入。
 
 ```text
 brand-visual doctor --json
 brand-visual capabilities --json
 brand-visual generate --spec <path> --json
 brand-visual validate --task <path> --json
+brand-visual version --json
+brand-visual skill status --agent <id> --scope project --json
+brand-visual skill install --agent <id> --scope project --json
+brand-visual skill update --agent <id> --scope project --json
+brand-visual skill uninstall --agent <id> --scope project --json
 ```
+
+安装命令支持 `--dry-run`。Agent ID 为 `codex`、`claude-code`、`cursor`、`gemini-cli` 或 `opencode`；默认作用域是 `project`，也可显式使用 `user`。安装器只更新或卸载自己拥有且当前内容哈希匹配的复制副本。
 
 计划接口：
 

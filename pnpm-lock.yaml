@@ -11,6 +11,9 @@ importers:
       '@brand-visual/cli':
         specifier: workspace:*
         version: link:packages/cli
+      '@brand-visual/installer':
+        specifier: workspace:*
+        version: link:packages/installer
       '@brand-visual/schemas':
         specifier: workspace:*
         version: link:packages/schemas
@@ -38,6 +41,9 @@ importers:
       '@brand-visual/core':
         specifier: workspace:*
         version: link:../core
+      '@brand-visual/installer':
+        specifier: workspace:*
+        version: link:../installer
       '@brand-visual/provider-mock':
         specifier: workspace:*
         version: link:../providers/mock
@@ -50,6 +56,8 @@ importers:
       '@brand-visual/schemas':
         specifier: workspace:*
         version: link:../schemas
+
+  packages/installer: {}
 
   packages/providers/mock:
     dependencies:

@@ -2,6 +2,7 @@
   "files": [],
   "references": [
     { "path": "packages/schemas" },
+    { "path": "packages/installer" },
     { "path": "packages/core" },
     { "path": "packages/providers/mock" },
     { "path": "packages/cli" }

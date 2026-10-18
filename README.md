@@ -1,6 +1,6 @@
 # Brand Visual Agent / `brand-visual-designer`
 
-这是 Brand Visual Designer V1 的跨 Agent 企业品牌 AI 视觉设计仓库。项目当前处于 M1：已具备单源 `SKILL.md`、正式 JSON Schema、TypeScript CLI/Core 骨架和离线 Mock Provider；真实图片 Provider 与确定性 Renderer 尚未接入。
+这是 Brand Visual Designer V1 的跨 Agent 企业品牌 AI 视觉设计仓库。M1 已完成：具备单源 `SKILL.md`、正式 JSON Schema、统一 TypeScript CLI、离线 Mock Provider、五平台安装适配器、CI 与验收证据；真实图片 Provider 与确定性 Renderer 尚未接入。
 
 ## 项目目标
 
@@ -17,6 +17,7 @@ pnpm exec brand-visual doctor --json
 pnpm exec brand-visual capabilities --json
 pnpm exec brand-visual generate --spec tests/fixtures/m1/design-spec.json --json
 pnpm exec brand-visual validate --task outputs/m1-mock-task --json
+pnpm exec brand-visual skill install --agent codex --scope project --dry-run --json
 pnpm test
 ```
 
@@ -51,7 +52,7 @@ brand-visual-agent/
 ├── packages/
 │   ├── cli/
 │   ├── core/
-│   ├── providers/
+│   ├── installer/
 │   ├── providers/mock/
 │   └── schemas/
 ├── apps/
@@ -66,6 +67,6 @@ brand-visual-agent/
 
 ## 当前状态
 
-状态：`M1-in-progress / mock-cli-operational`。
+状态：`M1-complete / supported: codex / blocked: claude-code,cursor,gemini-cli,opencode`。
 
-当前已验证 Schema、Mock CLI、失败退出码、路径边界、产物哈希和 Skill 静态格式。尚不能视为以下事项的证明：五个 Agent 已完成发现测试、安装器已实现、OpenAI API 已联通、任何图片模型 ID 可用、真实视觉输出已通过验收。
+当前已验证 Schema、Mock CLI、失败退出码、路径边界、产物哈希、Skill 静态格式和安全安装生命周期。五个平台都完成了官方路径核查和项目级复制安装；Codex 完成真实发现/reference/Mock CLI fixture 全流程。Claude Code 缺少登录、Cursor 客户端不存在、Gemini CLI 缺少认证、OpenCode Provider 配置返回 404，均按路线图明确为 blocked，未宣称兼容通过。OpenAI API、任何图片模型 ID 和真实视觉输出仍属 M2+，状态为 `unverified`。
