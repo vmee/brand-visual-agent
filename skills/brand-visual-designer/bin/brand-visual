@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+set -e
+
+# 定位当前脚本所在目录
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CLI_FILE="${SCRIPT_DIR}/cli.cjs"
+
+# 1. 探查可用的 Node.js 运行时
+NODE_BIN=""
+if command -v node >/dev/null 2>&1; then
+  NODE_BIN="node"
+elif [ -x "/usr/local/bin/node" ]; then
+  NODE_BIN="/usr/local/bin/node"
+elif [ -x "/opt/homebrew/bin/node" ]; then
+  NODE_BIN="/opt/homebrew/bin/node"
+else
+  # 探查常见 nvm / asdf 路径
+  NVM_NODE=$(find "${HOME}/.nvm/versions/node" -maxdepth 3 -type f -name node 2>/dev/null | sort -V | tail -n 1 || true)
+  if [ -n "${NVM_NODE}" ] && [ -x "${NVM_NODE}" ]; then
+    NODE_BIN="${NVM_NODE}"
+  fi
+fi
+
+if [ -z "${NODE_BIN}" ]; then
+  >&2 echo "[ERROR] 未检测到 Node.js 运行时，请先安装 Node.js (https://nodejs.org)"
+  exit 1
+fi
+
+# 2. 自动探查 sharp 与依赖路径，注入 NODE_PATH
+POSSIBLE_PATHS=(
+  "${SCRIPT_DIR}/../node_modules"
+  "${SCRIPT_DIR}/../../node_modules"
+  "${SCRIPT_DIR}/../../../node_modules"
+  "${HOME}/.workbuddy/node_modules"
+  "/Users/kongxiangming/Workspace/apps/brand-visual-agent/node_modules"
+  "$(npm root -g 2>/dev/null || true)"
+)
+
+NODE_PATH_MERGED="${NODE_PATH:-}"
+for p in "${POSSIBLE_PATHS[@]}"; do
+  if [ -d "$p" ]; then
+    if [ -z "$NODE_PATH_MERGED" ]; then
+      NODE_PATH_MERGED="$p"
+    else
+      NODE_PATH_MERGED="${NODE_PATH_MERGED}:$p"
+    fi
+  fi
+done
+
+export NODE_PATH="${NODE_PATH_MERGED}"
+exec "${NODE_BIN}" "${CLI_FILE}" "$@"

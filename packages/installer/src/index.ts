@@ -1,11 +1,13 @@
 import { createHash, randomUUID } from "node:crypto";
 import {
+  chmod,
   mkdir,
   lstat,
   readFile,
   readdir,
   rename,
   rm,
+  stat,
   writeFile,
 } from "node:fs/promises";
 import path from "node:path";
@@ -421,11 +423,14 @@ async function prepareCopy(
   try {
     for (const relative of source.files) {
       const destination = path.join(temporary, relative);
+      const sourceFile = path.join(context.sourceDirectory, relative);
       await mkdir(path.dirname(destination), { recursive: true });
       await writeFile(
         destination,
-        await readFile(path.join(context.sourceDirectory, relative)),
+        await readFile(sourceFile),
       );
+      const fileStat = await stat(sourceFile);
+      await chmod(destination, fileStat.mode);
     }
     const manifest: InstallManifest = {
       manifestVersion: 1,

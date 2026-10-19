@@ -10,10 +10,19 @@ description: >
 
 通过统一的 `brand-visual` CLI 创建可追溯、可修订的品牌视觉作品。Skill 负责工作流；CLI 和 Core 负责执行。不要直接调用图片 Provider，也不要依赖某一 Agent 的专有工具作为必要步骤。
 
-## 前置检查
+## CLI 契约与命令执行规则
 
-1. 运行 `brand-visual doctor --json`。
-2. 运行 `brand-visual capabilities --json`。
+为确保跨 Agent 和不同系统环境的无缝兼容，Agent 执行命令时遵循以下寻址优先级：
+
+1. **优先使用内置 CLI**：检查当前 Skill 目录下的 `bin/brand-visual`（如 `<skill-root>/bin/brand-visual`）。
+2. **回退到全局命令**：若内置 CLI 不存在或不可执行，回退执行系统的全局 `brand-visual`。
+
+### 命令调用约定
+
+使用 [CLI 契约](references/cli-reference.md) 中的命令和结果判断规则。执行时将下述命令替换为解析出的 CLI 路径：
+
+1. 运行 `[CLI] doctor --json`。
+2. 运行 `[CLI] capabilities --json`。
 3. 如果 CLI 缺失、版本不兼容或所需能力不可用，明确报告并停止；不要声称已经生成。
 4. 不要请求用户在聊天中粘贴 API 密钥。密钥应由执行环境安全提供。
 
@@ -82,7 +91,8 @@ description: >
 - 如果当前宿主 Agent（Codex、WorkBuddy 等）支持在其对话或内置环境中直接生成图片，Agent 应当先利用其自身的生成能力产出纯净背景图暂存（如 `temp-bg.png`）。
 - 然后将该底图传入 CLI 执行确定性图层合成与品牌验收：
   ```bash
-  brand-visual generate --spec <spec-path> --base-image <temp-bg-path> --json
+  # 优先使用 Skill 内置 bin/brand-visual，或全局 brand-visual
+  <skill-root>/bin/brand-visual generate --spec <spec-path> --base-image <temp-bg-path> --json
   ```
 - 这样能直接使用当前宿主选中的模型，无需在 CLI 中配置额外的第三方生图 API 密钥。
 - 若未使用 `--base-image`，CLI 将回退使用内部 Provider。在 Mock 模式下遇到 `provider.mock: true` 产物仅用于协议与安装验证。
