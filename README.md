@@ -19,17 +19,10 @@
 
 以下图片是仓库中的演示产物，用于展示输出结构和确定性排版效果。它们使用演示品牌或 Mock 流程，不代表当前版本已经接入真实图片 Provider。
 
-| 示例             | 预览                                                       |
-| ---------------- | ---------------------------------------------------------- |
-| 清爽社交媒体封面 | ![清爽社交媒体封面](docs/assets/gallery/clean-modern.png)  |
-| 暖色编辑版       | ![暖色编辑版](docs/assets/gallery/warm-editorial.png)      |
-| 青禾 SOP 封面    | ![青禾 SOP 封面](docs/assets/gallery/qinghe-sop-cover.png) |
-
-示例输入：
-
-- [`examples/qinghe-sop-cover.json`](examples/qinghe-sop-cover.json)
-- [`examples/design-spec.example.json`](examples/design-spec.example.json)
-- [`outputs/example-social-cover-001/`](outputs/example-social-cover-001/)
+| 示例                 | 预览                                                                                                 |
+| -------------------- | ---------------------------------------------------------------------------------------------------- |
+| 万顺为民敬老服务封面 | <img src="docs/assets/gallery/wswm-jinglaoyue-xhs-cover.png" width="240" alt="万顺为民敬老服务封面"> |
+| 青禾月嫂避坑指南     | <img src="docs/assets/gallery/qinghe-xhs-pitfalls-cover.png" width="240" alt="青禾月嫂避坑指南">     |
 
 ## 30 秒安装
 

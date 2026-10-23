@@ -19,17 +19,10 @@ A brand-guideline-driven visual design Skill for Codex, Claude Code, Cursor, Gem
 
 These images are demonstration outputs from the repository. They show the output structure and deterministic layout behavior; they use demonstration brands or Mock flows and do not mean that the current release has a real image Provider connected.
 
-| Example                | Preview                                                           |
-| ---------------------- | ----------------------------------------------------------------- |
-| Clean social cover     | ![Clean social cover](docs/assets/gallery/clean-modern.png)       |
-| Warm editorial variant | ![Warm editorial variant](docs/assets/gallery/warm-editorial.png) |
-| Qinghe SOP cover       | ![Qinghe SOP cover](docs/assets/gallery/qinghe-sop-cover.png)     |
-
-Example inputs:
-
-- [`examples/qinghe-sop-cover.json`](examples/qinghe-sop-cover.json)
-- [`examples/design-spec.example.json`](examples/design-spec.example.json)
-- [`outputs/example-social-cover-001/`](outputs/example-social-cover-001/)
+| Example                                | Preview                                                                                                                |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| Wanshun We The People elder-care cover | <img src="docs/assets/gallery/wswm-jinglaoyue-xhs-cover.png" width="240" alt="Wanshun We The People elder-care cover"> |
+| Qinghe maternity-nanny pitfalls guide  | <img src="docs/assets/gallery/qinghe-xhs-pitfalls-cover.png" width="240" alt="Qinghe maternity-nanny pitfalls guide">  |
 
 ## Install in 30 seconds
 
