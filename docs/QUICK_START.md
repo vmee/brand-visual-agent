@@ -1,55 +1,182 @@
-# 30 秒小白上手指南 (Codex / WorkBuddy)
+# 30 秒上手指南
 
-如果你不需要关心底层命令行或代码实现，只想在 **Codex** 或 **WorkBuddy** 中制作专业的品牌视觉图，请参考本指南。
+这份指南面向第一次使用 Brand Visual Designer 的用户。它说明如何安装 Skill、如何发出第一条 Prompt，以及当前版本能验证什么。
 
----
+## 先了解当前版本
 
-## ⚡ 1. 极速安装（只需 10 秒）
+当前仓库处于 M1：
 
-### 方式 A：一键终端安装（推荐）
+- Skill、CLI、Schema 和安装器可以安装和验证。
+- Mock Provider 可以验证任务协议、输出目录和质量报告。
+- 真实图片 Provider 和完整确定性 Renderer 仍在后续里程碑中。
+- Mock 产物带有 `provider.mock: true` 和 `needs_review`，不能作为生产级视觉交付物。
 
-在本项目根目录下打开终端，执行以下任意一条命令：
+## 1. 前置条件
 
-- **安装到 WorkBuddy**：
-  ```bash
-  ./scripts/quick-install.sh workbuddy
-  ```
-- **安装到 Codex**：
-  ```bash
-  ./scripts/quick-install.sh codex
-  ```
+如果只想让 Agent 发现并使用这个 Skill，需要：
 
-### 方式 B：手动解压复制（纯图形化）
+- 已安装 Codex 或 WorkBuddy 等目标 Agent
+- Node.js 22.12 或更高版本
+- pnpm 10
 
-直接将本仓库下的 `skills/brand-visual-designer/` 整个文件夹复制到对应目录：
-- **WorkBuddy**：`~/.workbuddy/skills/brand-visual-designer`
-- **Codex**：`~/.codex/skills/brand-visual-designer`
+如果要运行本地 CLI、构建项目或执行测试，还需要在仓库目录执行 `pnpm install`。
 
----
+## 2. 安装 Skill
 
-## 🎨 2. 怎么开始对话？
+### 推荐方式：使用 `skills` CLI
 
-安装完成后，打开 WorkBuddy 或 Codex 对话框，发送任意一句话：
+公开仓库用户不需要先克隆项目，直接在自己的项目目录中执行：
 
-> **小白提示词（直接复制）：**
-> “你好，我想做一张小红书封面，主题是【春季咖啡新品上线】。”
+```bash
+# 项目级安装：当前项目可以发现这个 Skill
+npx -y skills add vmee/brand-visual-agent \
+  --skill brand-visual-designer \
+  --yes
+```
 
-助手会自动为你提供“点单式”流程：
-1. **确认规格**：自动匹配 3:4 小红书规格。
-2. **选择品牌**：没有品牌时，可以直接体验内置的「青禾母婴」或「演示品牌」，也可以回答 3 个问题自动创建。
-3. **出图与微调**：生成图片后，不满意文字或布局可以直接说“把标题字改大一点”、“把背景换成浅绿色”，无需重新抽卡。
+如果希望所有项目都可以使用：
 
----
+```bash
+npx -y skills add vmee/brand-visual-agent \
+  --skill brand-visual-designer \
+  --global \
+  --yes
+```
 
-## 💡 3. 常见指令速查
+如果需要指定 Agent：
 
-| 你想做什么 | 直接跟助手说这句话 |
-| :--- | :--- |
-| **新手试玩** | “用默认演示品牌做一张小红书种草封面” |
-| **用官网建品牌** | 上传 Logo 图片并附带：“这是我们官网 `https://example.com`，结合附件里的 Logo 帮我建立品牌规范” |
-| **传作品建品牌** | 发送以前的海报 + Logo 原图，附带：“按这套图的调性与附带的 Logo 建立我的品牌规范” |
-| **快问快答建品牌** | 上传 Logo 图片并说：“帮我新建品牌规范，名字叫【星尘科技】，主色是深蓝色” |
-| **公众号长图** | “制作一张公众号文章头图，标题是【2026 AI 趋势洞察】” |
-| **微调文案** | “方案一不错，把副标题文字改成【立即领取新手福利】” |
+```bash
+npx -y skills add vmee/brand-visual-agent \
+  --skill brand-visual-designer \
+  --agent codex \
+  --yes
+```
 
-> 📌 **贴士**：建立自己的品牌时，建议**至少上传 1 张品牌 Logo 图片**（透明底 PNG 或矢量 SVG 最佳）。助手会采用 100% 确定性保真合成，绝不让 AI 涂抹或破坏你的官方 Logo。
+`skills` CLI 的默认作用域是当前项目，`--global`（或 `-g`）才是用户级安装。安装完成后，重新打开目标 Agent。
+
+该命令只安装 Skill 源目录，不会安装本仓库的开发依赖。内置的 `bin/cli.cjs` 已随 Skill 一起分发；只有要修改源码、运行测试或接入开发环境时，才需要克隆仓库并执行 `pnpm install`。
+
+### 备用方式：使用仓库安装脚本
+
+如果需要验证本仓库自己的安装器，或当前环境没有 `skills` CLI：
+
+```bash
+git clone https://github.com/vmee/brand-visual-agent.git
+cd brand-visual-agent
+./scripts/quick-install.sh codex
+```
+
+### 手动安装
+
+```text
+Codex:    ~/.codex/skills/brand-visual-designer
+WorkBuddy: ~/.workbuddy/skills/brand-visual-designer
+```
+
+不要只复制 `SKILL.md`，因为 Skill 还可能引用 `references/` 和内置 CLI。
+
+其他 Agent 的安装路径和当前验证状态见[跨 Agent 兼容说明](CROSS_AGENT_COMPATIBILITY.md)。
+
+## 3. 验证安装
+
+安装完成后，重新打开目标 Agent，发送：
+
+```text
+你现在可以使用哪些品牌视觉设计能力？
+```
+
+Agent 应该能够识别 `brand-visual-designer`，并说明它可以处理品牌档案、准确中文排版、Logo 保真、DesignSpec 和质量检查。
+
+如果你在仓库内进行本地验证，可以运行：
+
+```bash
+pnpm install
+pnpm build
+pnpm exec brand-visual skill status \
+  --agent codex \
+  --scope project \
+  --json
+```
+
+## 4. 发送第一条 Prompt
+
+直接复制下面任意一条：
+
+### 新手体验
+
+```text
+用默认演示品牌做一张小红书 3:4 封面，主题是“春季咖啡新品上线”。请保留准确中文，并输出一个可供我选择的方案。
+```
+
+### 使用自己的品牌
+
+```text
+这是我的 Logo 和品牌资料。请先建立品牌规范，再制作一张公众号文章头图。Logo 必须使用原始素材，不要让生成模型重绘。
+```
+
+### 修改已有方案
+
+```text
+把第一版主标题放大 20%，副标题和 Logo 不变，并告诉我哪些图层发生了变化。
+```
+
+## 5. Agent 会做什么
+
+一次设计任务通常包含以下步骤：
+
+1. 确认画布尺寸、用途和准确文案。
+2. 检查品牌档案、Logo 和其他受保护素材。
+3. 创建并校验 DesignSpec。
+4. 调用 `brand-visual` CLI。
+5. 执行尺寸、文本、资产和品牌检查。
+6. 返回图片、任务状态、质量报告和需要人工确认的问题。
+
+## 6. 查看示例效果
+
+仓库提供了演示产物，可以先查看输出结构和确定性排版效果：
+
+- [清爽社交媒体封面](../outputs/example-social-cover-001/variants/clean-modern.png)
+- [暖色编辑版](../outputs/example-social-cover-001/variants/warm-editorial.png)
+- [青禾 SOP 封面](../outputs/qinghe-sop-cover-001/variants/sop-cover.png)
+
+对应的输入示例：
+
+- [`examples/qinghe-sop-cover.json`](../examples/qinghe-sop-cover.json)
+- [`examples/design-spec.example.json`](../examples/design-spec.example.json)
+
+这些图片的用途是演示。发布前请根据当前版本的 Provider 状态判断是否可以用于真实视觉交付，不要把 Mock 产物描述成真实 AI 生图结果。
+
+## 7. 输出文件
+
+任务通常会写入：
+
+```text
+outputs/<task-id>/
+├── variants/
+│   └── <variant>.png
+├── raw-backgrounds/
+├── design-spec.json
+├── manifest.json
+├── quality-report.json
+└── summary.json
+```
+
+- `PNG`：视觉产物或演示产物
+- `DesignSpec`：可修改的结构化设计描述
+- `manifest`：资产来源、哈希和任务记录
+- `quality-report`：自动检查和人工检查状态
+- `summary`：给 Agent 和用户阅读的结果摘要
+
+## 常见问题
+
+### 没有 Logo 可以使用吗？
+
+可以先使用规范文字排版，但如果需要保留真实品牌识别，建议提供透明底 PNG 或 SVG Logo。没有原始 Logo 时，不应声称输出包含官方 Logo。
+
+### 为什么结果是 `needs_review`？
+
+这表示任务可能完成了协议或自动检查，但仍需要人工确认品牌合规、素材授权、审美或真实 Provider 状态。`needs_review` 不是“全部质量检查通过”。
+
+### 为什么没有真实图片？
+
+M1 默认使用 Mock Provider，主要用于验证 Skill、CLI 和输出协议。真实图片 Provider 属于后续里程碑，缺失能力时 Skill 必须明确报告失败或限制，不会用占位图伪装成功。
