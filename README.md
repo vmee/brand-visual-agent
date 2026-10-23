@@ -1,4 +1,4 @@
-# Brand Visual Agent
+# Brand Visual Agent / 品牌视觉智能体
 
 一个由品牌规范驱动的视觉设计 Skill，支持 Codex、Claude Code、Cursor、Gemini CLI、OpenCode 和 WorkBuddy 等 Agent。
 

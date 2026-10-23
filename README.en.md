@@ -1,4 +1,4 @@
-# Brand Visual Agent
+# Brand Visual Agent / 品牌视觉智能体
 
 A brand-guideline-driven visual design Skill for Codex, Claude Code, Cursor, Gemini CLI, OpenCode, and WorkBuddy.
 
