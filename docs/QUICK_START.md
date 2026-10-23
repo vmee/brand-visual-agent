@@ -43,12 +43,32 @@ npx -y skills add vmee/brand-visual-agent \
   --yes
 ```
 
-如果需要指定 Agent：
+如果需要指定 Codex：
 
 ```bash
 npx -y skills add vmee/brand-visual-agent \
   --skill brand-visual-designer \
   --agent codex \
+  --yes
+```
+
+如果安装到 WorkBuddy：
+
+```bash
+# WorkBuddy 项目级安装
+npx -y skills add vmee/brand-visual-agent \
+  --skill brand-visual-designer \
+  --agent workbuddy \
+  --yes
+```
+
+如果希望 WorkBuddy 在所有项目中可用：
+
+```bash
+npx -y skills add vmee/brand-visual-agent \
+  --skill brand-visual-designer \
+  --agent workbuddy \
+  --global \
   --yes
 ```
 
@@ -98,7 +118,72 @@ pnpm exec brand-visual skill status \
   --json
 ```
 
-## 4. 发送第一条 Prompt
+## 4. 安装后的首次交互示例
+
+安装并重新打开 Agent 后，用户可能会看到这样的引导：
+
+> 👋 你好！我是你的品牌视觉设计师，环境已就绪（CLI 正常，当前还没有加载任何品牌档案）。
+>
+> 无论是社媒封面、宣传海报还是品牌规范，我都能一站式为你制作。
+>
+> 请问你想制作什么类型？（回复数字即可）：
+>
+> 📕 小红书爆款封面（3:4 比例，吸睛大字，适合种草/干货）
+> 📢 公众号头图 / 微信卡片（2.35:1 比例，大气排版）
+> 🛍️ 电商促销 / 朋友圈海报（1:1 或 9:16 比例）
+> 🏢 新建品牌规范（1 分钟对话，快速生成品牌色与 Logo 配置）
+>
+> 💡 新手提示：如果你还没准备品牌资产，直接告诉我「用示例品牌做一张小红书封面」，我们用 3 个小问题（品牌名、主营业务、想要的色调）快速建档，立即出图体验效果！
+
+## 5. 打造自己的品牌规范
+
+这个 Skill 不是把品牌永久训练进模型，而是把规则保存为可重复读取的结构化品牌档案。你可以选择以下方式之一：
+
+### 官网建档
+
+```text
+这是我的官网：https://example.com
+这是我的 Logo 原图。请分析品牌定位、主色、辅助色、字体倾向、留白和视觉风格，先输出品牌规范草案，确认后再保存。
+```
+
+### 历史作品建档
+
+上传 3–10 张满意的海报或社媒封面，以及透明底 PNG 或 SVG Logo，然后说：
+
+```text
+请根据这些历史作品和 Logo 建立品牌视觉规范，分析颜色、字体层级、画布比例、Logo 安全距离、排版方式，以及哪些元素必须保持不变。请先输出草案，等我确认后再保存。
+```
+
+### 问答建档
+
+如果还没有官网或历史作品，至少告诉 Agent：品牌名称、主营业务、目标用户、希望传达的感觉、偏好颜色、避免的风格和主要使用场景。
+
+```text
+帮我建立品牌视觉规范。
+品牌名称：青禾母婴
+主营业务：月嫂到家和产后护理
+目标用户：新手父母
+希望传达的感觉：温和、专业、安心
+偏好颜色：浅薄荷绿、青绿色、少量暖橙色
+主要场景：小红书封面、公众号头图、朋友圈海报
+Logo：我会上传透明底 PNG
+```
+
+品牌档案会记录颜色、字体、Logo 和其他资产哈希、Logo 保真规则、准确文案约束、品牌事实和授权复核项。Logo 默认使用 `protection: exact`，允许按比例缩放和平移，不允许生成式重绘、拉伸变形或未经允许的改色。
+
+品牌档案确认后，可以这样使用：
+
+```text
+使用我的品牌档案，制作一张小红书 3:4 封面。
+主题：产后护理服务介绍
+主标题：月子期间最容易忽略的 3 个细节
+副标题：新手妈妈护理指南
+要求：保留原始 Logo，中文逐字准确，输出两个独立方案，并列出需要人工审核的内容。
+```
+
+品牌档案示例见 [`brands/qinghe/brand.yaml`](../brands/qinghe/brand.yaml)。
+
+## 6. 发送第一条 Prompt
 
 直接复制下面任意一条：
 
@@ -120,7 +205,7 @@ pnpm exec brand-visual skill status \
 把第一版主标题放大 20%，副标题和 Logo 不变，并告诉我哪些图层发生了变化。
 ```
 
-## 5. Agent 会做什么
+## 7. Agent 会做什么
 
 一次设计任务通常包含以下步骤：
 
@@ -131,22 +216,16 @@ pnpm exec brand-visual skill status \
 5. 执行尺寸、文本、资产和品牌检查。
 6. 返回图片、任务状态、质量报告和需要人工确认的问题。
 
-## 6. 查看示例效果
+## 8. 查看示例效果
 
-仓库提供了演示产物，可以先查看输出结构和确定性排版效果：
+仓库提供了公开演示图片，可以先查看输出效果：
 
-- [清爽社交媒体封面](../outputs/example-social-cover-001/variants/clean-modern.png)
-- [暖色编辑版](../outputs/example-social-cover-001/variants/warm-editorial.png)
-- [青禾 SOP 封面](../outputs/qinghe-sop-cover-001/variants/sop-cover.png)
-
-对应的输入示例：
-
-- [`examples/qinghe-sop-cover.json`](../examples/qinghe-sop-cover.json)
-- [`examples/design-spec.example.json`](../examples/design-spec.example.json)
+- [万顺为民敬老服务封面](../docs/assets/gallery/wswm-jinglaoyue-xhs-cover.png)
+- [青禾月嫂避坑指南](../docs/assets/gallery/qinghe-xhs-pitfalls-cover.png)
 
 这些图片的用途是演示。发布前请根据当前版本的 Provider 状态判断是否可以用于真实视觉交付，不要把 Mock 产物描述成真实 AI 生图结果。
 
-## 7. 输出文件
+## 9. 输出文件
 
 任务通常会写入：
 
@@ -167,7 +246,7 @@ outputs/<task-id>/
 - `quality-report`：自动检查和人工检查状态
 - `summary`：给 Agent 和用户阅读的结果摘要
 
-## 常见问题
+## 10. 常见问题
 
 ### 没有 Logo 可以使用吗？
 

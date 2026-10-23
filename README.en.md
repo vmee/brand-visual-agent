@@ -4,7 +4,31 @@ A brand-guideline-driven visual design Skill for Codex, Claude Code, Cursor, Gem
 
 [中文说明](README.md)
 
-> Current status: `M1 complete`. The Skill, CLI, Schema, installer, and Mock Provider are available. A real image Provider and the complete deterministic Renderer are planned for later milestones. Mock outputs in this repository validate the protocol and output structure; they are not production-ready visual deliverables.
+## Why not rely on direct AI image generation for brand visuals?
+
+When a brand brief is sent directly to an image generation model, common problems include:
+
+- Chinese headlines, brand names, and numbers may contain wrong or missing characters
+- Logos, people, and product assets may be redrawn and lose fidelity or violate usage requirements
+- Colors, typography, spacing, and composition can vary between generations, weakening brand consistency
+- Changing one headline may require regenerating the entire image and changing parts that were already approved
+- It is difficult to trace which assets were used, what transformations occurred, and which checks were completed
+- The model may invent unverified prices, credentials, claims, contact details, or other brand facts
+
+## What does Brand Visual Agent add?
+
+The Skill separates generative visual atmosphere from deterministic brand composition:
+
+- Render accurate Chinese copy, numbers, and brand names with deterministic text layers
+- Protect logos, people, and product assets from arbitrary regeneration
+- Record the canvas, layers, copy, assets, and allowed transformations in a DesignSpec
+- Produce manifests, hashes, and quality reports for traceability and review
+- Update a headline or layout layer without unnecessarily changing other approved content
+- Report CLI, Schema, or quality-check failures explicitly instead of masking them with placeholder outputs
+
+It is not a prompt that promises perfect model-generated images. It is a workflow that makes brand visuals more accurate, consistent, editable, and reviewable.
+
+> M1 currently validates the Skill, CLI, Schema, installer, and Mock Provider. Real image Provider capabilities depend on the actual release and capability probe.
 
 ## What you get
 
@@ -14,6 +38,99 @@ A brand-guideline-driven visual design Skill for Codex, Claude Code, Cursor, Gem
 - Produce separate images, DesignSpecs, manifests, and quality reports for each variant
 - Run the same workflow through one CLI across different Agent hosts
 - Return explicit failures when a capability is unavailable, a path escapes its allowed workspace, or a quality check fails
+
+## How to build your own brand guidelines
+
+This Skill does not fine-tune a model with your brand. It turns brand rules into a structured brand profile that the Agent can read, apply, and validate for every design task. You can create a profile in three ways.
+
+### Method 1: provide a website or landing page
+
+Best for brands that already have an online presence. Provide the URL together with the original logo asset:
+
+```text
+Create a brand visual profile for me.
+
+Website: https://example.com
+Here is the original logo. Keep it exact.
+Analyze the brand positioning, primary and secondary colors, typography direction,
+spacing, and visual style. Return a draft for my approval before saving it.
+```
+
+### Method 2: upload previous designs and the logo
+
+Best for an established brand. Provide 3–10 approved posters, social covers, or campaign images, together with a transparent PNG or SVG logo.
+
+```text
+Build a brand visual profile from the uploaded designs and logo.
+
+Analyze:
+1. Primary and secondary colors;
+2. Heading, body, and numeric type hierarchy;
+3. Common canvas ratios;
+4. Logo position, size, and clear space;
+5. Headline and subtitle layout;
+6. Which elements must remain fixed and which can vary by topic.
+
+Return a draft first and save it only after I approve it.
+```
+
+### Method 3: create a profile through a short Q&A
+
+Best for a new brand without a website or previous designs. Prepare at least the brand name, business, target audience, desired feeling, preferred colors, styles to avoid, and main use cases.
+
+```text
+Create a brand visual profile.
+
+Brand: Qinghe Maternity Care
+Business: In-home maternity-nanny and postpartum care
+Audience: New parents in major Chinese cities
+Desired feeling: Warm, professional, reassuring
+Preferred colors: Pale mint, teal green, and a small amount of warm orange
+Avoid: Overly clinical visuals, neon colors, and complex decoration
+Main use cases: Xiaohongshu covers, WeChat article headers, and social posters
+Logo: I will upload a transparent PNG
+```
+
+### What the profile records
+
+A brand profile can record:
+
+- Primary, secondary, surface, card, and text colors
+- Heading, body, and fallback fonts
+- Logos, people, products, and other assets with SHA-256 hashes
+- Logo clear space, aspect-ratio, and recoloring rules
+- Exact-copy, verified-fact, and marketing-claim constraints
+- Asset rights status and manual review items
+
+Use a transparent PNG or SVG for the logo whenever possible. Logos are normally marked `protection: exact`: proportional scaling and translation are allowed, while generative redraw, distortion, and unauthorized recoloring are not.
+
+See [`brands/qinghe/brand.yaml`](brands/qinghe/brand.yaml) for an example profile and [`docs/DESIGN_SPEC.md`](docs/DESIGN_SPEC.md) for the DesignSpec structure.
+
+### Use an approved brand profile
+
+After the profile is approved, request a design directly:
+
+```text
+Use my brand profile to create a 3:4 Xiaohongshu cover.
+
+Topic: postpartum care services
+Headline: 3 details new mothers often overlook during confinement
+Subtitle: A care guide for first-time mothers
+Requirements:
+- Use the brand primary and secondary colors;
+- Keep the original logo;
+- Render the Chinese copy exactly;
+- Produce two separate variants;
+- Tell me which items require human review.
+```
+
+For a targeted revision:
+
+```text
+Increase the main headline by 20%. Keep the logo, colors, and all other layers unchanged.
+```
+
+The Skill uses DesignSpec and stable layer IDs to record the revision scope. M1 currently validates the profile protocol, Schema, Mock CLI, and quality reports; website extraction, real Providers, and complete rendering depend on the actual release.
 
 ## Preview
 
@@ -46,12 +163,32 @@ npx -y skills add vmee/brand-visual-agent \
   --yes
 ```
 
-To target a specific Agent:
+To target Codex:
 
 ```bash
 npx -y skills add vmee/brand-visual-agent \
   --skill brand-visual-designer \
   --agent codex \
+  --yes
+```
+
+To install for WorkBuddy:
+
+```bash
+# WorkBuddy project-level installation
+npx -y skills add vmee/brand-visual-agent \
+  --skill brand-visual-designer \
+  --agent workbuddy \
+  --yes
+```
+
+To make the WorkBuddy Skill available across projects:
+
+```bash
+npx -y skills add vmee/brand-visual-agent \
+  --skill brand-visual-designer \
+  --agent workbuddy \
+  --global \
   --yes
 ```
 
@@ -121,6 +258,23 @@ The Agent should:
 6. Return the artifact status and any authorization, brand, or aesthetic issues that require human review.
 
 See the [quick start guide](docs/QUICK_START.md) for the non-technical walkthrough.
+
+## Example onboarding experience
+
+After installation and restarting the Agent, users may see an onboarding message like this:
+
+> 👋 你好！我是你的品牌视觉设计师，环境已就绪（CLI 正常，当前还没有加载任何品牌档案）。
+>
+> 无论是社媒封面、宣传海报还是品牌规范，我都能一站式为你制作。
+>
+> 请问你想制作什么类型？（回复数字即可）：
+>
+> 📕 小红书爆款封面（3:4 比例，吸睛大字，适合种草/干货）
+> 📢 公众号头图 / 微信卡片（2.35:1 比例，大气排版）
+> 🛍️ 电商促销 / 朋友圈海报（1:1 或 9:16 比例）
+> 🏢 新建品牌规范（1 分钟对话，快速生成品牌色与 Logo 配置）
+>
+> 💡 新手提示：如果你还没准备品牌资产，直接告诉我「用示例品牌做一张小红书封面」，我们用 3 个小问题（品牌名、主营业务、想要的色调）快速建档，立即出图体验效果！
 
 ## Local development and verification
 
