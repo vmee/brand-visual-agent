@@ -39,6 +39,12 @@ It is not a prompt that promises perfect model-generated images. It is a workflo
 - Run the same workflow through one CLI across different Agent hosts
 - Return explicit failures when a capability is unavailable, a path escapes its allowed workspace, or a quality check fails
 
+### Video and motion visuals
+
+The workflow can extend brand guidelines to short-form video and motion visuals for WeChat Channels, Douyin, Xiaohongshu, and other vertical formats. It can organize exact Chinese copy, brand colors, logo fidelity, caption timing, and motion effects into a finished video.
+
+A verified example is an 18-second, 1080×1920 vertical video encoded with H.264/AAC, using typewriter text animation synchronized with audio. This example demonstrates an existing video output workflow; it does not mean the repository currently provides a standalone video-generation Provider or distributes that local video asset.
+
 ## How to build your own brand guidelines
 
 This Skill does not fine-tune a model with your brand. It turns brand rules into a structured brand profile that the Agent can read, apply, and validate for every design task. You can create a profile in three ways.
