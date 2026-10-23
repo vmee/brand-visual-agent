@@ -1,6 +1,6 @@
 # 30 秒上手指南
 
-这份指南面向第一次使用 Brand Visual Designer 的用户。它说明如何安装 Skill、如何发出第一条 Prompt，以及当前版本能验证什么。
+这份指南面向第一次使用 Brand Visual Agent 的用户。它说明如何安装 Skill、如何发出第一条 Prompt，以及当前版本能验证什么。
 
 ## 先了解当前版本
 
