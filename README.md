@@ -1,46 +1,50 @@
-# Brand Visual Designer
+# BrandCanvas
 
-让 Codex、Claude Code、Cursor、Gemini CLI、OpenCode 和 WorkBuddy 等 Agent，按照统一的品牌规范创建、编辑和验证视觉设计。
+A brand-guideline-driven visual design Skill for Codex, Claude Code, Cursor, Gemini CLI, OpenCode, and WorkBuddy.
 
-> 当前版本状态：`M1 complete`。Skill、CLI、Schema、安装器和 Mock Provider 已完成；真实图片 Provider 与完整确定性 Renderer 仍在后续里程碑中。仓库中的 Mock 产物用于验证协议和输出结构，不应当作生产级视觉交付物。
+[中文说明](README.zh-CN.md)
 
-## 你可以得到什么
+> Current status: `M1 complete`. The Skill, CLI, Schema, installer, and Mock Provider are available. A real image Provider and the complete deterministic Renderer are planned for later milestones. Mock outputs in this repository validate the protocol and output structure; they are not production-ready visual deliverables.
 
-- 使用品牌颜色、Logo 和资产规范组织视觉设计任务
-- 用确定性文本图层渲染准确中文，避免生成模型改写文案
-- 对 Logo、人物和商品素材设置保真保护
-- 为每个方案输出独立的图片、DesignSpec、manifest 和质量报告
-- 通过统一 CLI 在不同 Agent 中执行相同的工作流
-- 在能力不可用、文件越界或质量检查失败时显式返回失败
+## What you get
 
-## 效果预览
+- Organize visual design tasks around brand colors, logos, and protected assets
+- Render accurate Chinese copy with deterministic text layers instead of relying on a generative model
+- Protect logos, people, and product assets from unintended regeneration
+- Produce separate images, DesignSpecs, manifests, and quality reports for each variant
+- Run the same workflow through one CLI across different Agent hosts
+- Return explicit failures when a capability is unavailable, a path escapes its allowed workspace, or a quality check fails
 
-以下图片是仓库中的演示产物，用于展示输出结构和确定性排版效果。它们使用演示品牌或 Mock 流程，不能代表当前版本已经接入真实图片 Provider。
+## Preview
 
-| 示例             | 预览                                                                            |
-| ---------------- | ------------------------------------------------------------------------------- |
-| 清爽社交媒体封面 | ![清爽社交媒体封面](outputs/example-social-cover-001/variants/clean-modern.png) |
-| 暖色编辑版       | ![暖色编辑版](outputs/example-social-cover-001/variants/warm-editorial.png)     |
-| 青禾 SOP 封面    | ![青禾 SOP 封面](outputs/qinghe-sop-cover-001/variants/sop-cover.png)           |
+These images are demonstration outputs from the repository. They show the output structure and deterministic layout behavior; they use demonstration brands or Mock flows and do not mean that the current release has a real image Provider connected.
 
-示例任务的输入可以参考：
+| Example                | Preview                                                           |
+| ---------------------- | ----------------------------------------------------------------- |
+| Clean social cover     | ![Clean social cover](docs/assets/gallery/clean-modern.png)       |
+| Warm editorial variant | ![Warm editorial variant](docs/assets/gallery/warm-editorial.png) |
+| Qinghe SOP cover       | ![Qinghe SOP cover](docs/assets/gallery/qinghe-sop-cover.png)     |
+
+Example inputs:
 
 - [`examples/qinghe-sop-cover.json`](examples/qinghe-sop-cover.json)
 - [`examples/design-spec.example.json`](examples/design-spec.example.json)
 - [`outputs/example-social-cover-001/`](outputs/example-social-cover-001/)
 
-## 30 秒安装
+## Install in 30 seconds
 
-### 推荐方式：使用 `skills` CLI
+### Recommended: use the `skills` CLI
 
-这是公开仓库用户最简单的安装方式。在你的项目目录中执行：
+From your project directory:
 
 ```bash
-# 安装到当前项目，Agent 只在这个项目中发现 Skill
-npx -y skills add vmee/brand-visual-agent --skill brand-visual-designer --yes
+# Project-level installation
+npx -y skills add vmee/brand-visual-agent \
+  --skill brand-visual-designer \
+  --yes
 ```
 
-如果希望在所有项目中使用，增加 `-g`：
+To make the Skill available across projects, add `--global`:
 
 ```bash
 npx -y skills add vmee/brand-visual-agent \
@@ -49,7 +53,7 @@ npx -y skills add vmee/brand-visual-agent \
   --yes
 ```
 
-也可以显式指定目标 Agent：
+To target a specific Agent:
 
 ```bash
 npx -y skills add vmee/brand-visual-agent \
@@ -58,38 +62,36 @@ npx -y skills add vmee/brand-visual-agent \
   --yes
 ```
 
-`skills` CLI 默认安装到当前项目；`--global`（或 `-g`）才是用户级安装。安装完成后，重新打开 Agent。
+The `skills` CLI installs to the current project by default. `--global` (or `-g`) installs for the user. Restart the Agent after installation.
 
-> 这个命令安装的是 `skills/brand-visual-designer/`，其中包含 `SKILL.md`、`references/` 和内置 CLI。它不会安装本仓库的开发依赖；只有要运行本地测试或修改源码时，才需要执行 `pnpm install`。
+> This command installs `skills/brand-visual-designer/`, including `SKILL.md`, `references/`, and the embedded CLI. It does not install this repository's development dependencies. Run `pnpm install` only if you need to modify the source or run the local test suite.
 
-### 备用方式：从源码安装
+### Alternative: install from source
 
-如果你需要使用仓库中的安装器、验证安装生命周期，或者当前环境没有 `skills` CLI，可以执行：
+Use the repository installer when you need to test the install lifecycle or when the `skills` CLI is unavailable:
 
 ```bash
 git clone https://github.com/vmee/brand-visual-agent.git
 cd brand-visual-agent
 
-# 安装到 Codex 用户级 Skill 目录
+# Install for Codex
 ./scripts/quick-install.sh codex
 
-# 或安装到 WorkBuddy 用户级 Skill 目录
+# Or install for WorkBuddy
 ./scripts/quick-install.sh workbuddy
 ```
 
-安装脚本会在需要时构建 CLI，并把唯一源目录 `skills/brand-visual-designer/` 安装到目标 Agent。
+### Manual installation
 
-### 手动安装
-
-将整个目录复制到目标 Agent 的 Skill 目录，不要只复制 `SKILL.md`：
+Copy the entire directory to the target Agent's Skill directory. Do not copy only `SKILL.md`:
 
 ```text
 skills/brand-visual-designer/
 ```
 
-常用目录如下：
+Common locations:
 
-| Agent       | 项目级目录                                | 用户级目录                                        |
+| Agent       | Project scope                             | User scope                                        |
 | ----------- | ----------------------------------------- | ------------------------------------------------- |
 | Codex       | `.codex/skills/brand-visual-designer`     | `~/.codex/skills/brand-visual-designer`           |
 | Claude Code | `.claude/skills/brand-visual-designer`    | `~/.claude/skills/brand-visual-designer`          |
@@ -98,38 +100,38 @@ skills/brand-visual-designer/
 | OpenCode    | `.opencode/skills/brand-visual-designer`  | `~/.config/opencode/skills/brand-visual-designer` |
 | WorkBuddy   | `.workbuddy/skills/brand-visual-designer` | `~/.workbuddy/skills/brand-visual-designer`       |
 
-Agent 的路径和兼容状态可能随版本变化。安装前请查看[跨 Agent 兼容说明](docs/CROSS_AGENT_COMPATIBILITY.md)。
+Paths and compatibility status can change with Agent releases. See [cross-Agent compatibility](docs/CROSS_AGENT_COMPATIBILITY.md) before installing manually.
 
-## 第一次使用
+## Your first prompt
 
-重新打开 Agent 后，直接发送下面任意一条 Prompt：
+After restarting the Agent, try any of these prompts:
 
 ```text
-用默认演示品牌做一张小红书 3:4 封面，主题是“春季咖啡新品上线”。
+Create a 3:4 Xiaohongshu cover for a spring coffee product launch using the default demo brand.
 ```
 
 ```text
-这是我的 Logo 和品牌资料。请先建立品牌规范，再制作一张公众号文章头图。Logo 必须使用原始素材，不要让生成模型重绘。
+Here is my logo and brand material. First create a brand profile, then make a WeChat article header. Use the original logo asset and do not let the generative model redraw it.
 ```
 
 ```text
-把第一版主标题放大 20%，副标题和 Logo 不变，并告诉我哪些图层发生了变化。
+Increase the first version's main headline by 20%. Keep the subtitle and logo unchanged, and tell me which layers changed.
 ```
 
-Agent 应当按照以下流程工作：
+The Agent should:
 
-1. 确认画布尺寸、用途和准确文案。
-2. 检查品牌档案、Logo 和其他受保护素材。
-3. 创建并校验版本化 DesignSpec。
-4. 调用 `brand-visual` CLI。
-5. 执行质量检查并读取 manifest、quality report 和 summary。
-6. 返回产物状态以及需要人工确认的授权、品牌或审美问题。
+1. Confirm the canvas size, purpose, and exact copy.
+2. Check the brand profile, logo, and other protected assets.
+3. Create and validate a versioned DesignSpec.
+4. Call the `brand-visual` CLI.
+5. Run quality checks and read the manifest, quality report, and summary.
+6. Return the artifact status and any authorization, brand, or aesthetic issues that require human review.
 
-更多面向非技术用户的说明见[快速开始](docs/QUICK_START.md)。
+See the [quick start guide](docs/QUICK_START.md) for the non-technical walkthrough.
 
-## 本地开发与验证
+## Local development and verification
 
-如果你要运行 CLI、修改代码或执行测试：
+To run the CLI, modify the source, or run tests:
 
 ```bash
 pnpm install
@@ -141,7 +143,7 @@ pnpm exec brand-visual validate --task outputs/m1-mock-task --json
 pnpm test
 ```
 
-查看 Skill 安装状态：
+Check Skill installation status:
 
 ```bash
 pnpm exec brand-visual skill status \
@@ -150,11 +152,11 @@ pnpm exec brand-visual skill status \
   --json
 ```
 
-标准输出是机器可读 JSON；诊断信息写入标准错误；失败使用非零退出码。完整命令见 [CLI 契约](skills/brand-visual-designer/references/cli-reference.md)。
+Standard output is machine-readable JSON. Diagnostics go to standard error, and failures use a non-zero exit code. See the [CLI contract](skills/brand-visual-designer/references/cli-reference.md) for the full command reference.
 
-## 输出结构
+## Output structure
 
-一个任务目录通常包含：
+A task directory typically contains:
 
 ```text
 outputs/<task-id>/
@@ -167,62 +169,63 @@ outputs/<task-id>/
 └── summary.json
 ```
 
-| 文件           | 用途                        |
-| -------------- | --------------------------- |
-| PNG            | 视觉产物或演示产物          |
-| DesignSpec     | 可修改的结构化设计描述      |
-| manifest       | 资产来源、哈希和任务记录    |
-| quality report | 尺寸、文本、Logo 等检查结果 |
-| summary        | 面向 Agent 和用户的结果摘要 |
+| File           | Purpose                                        |
+| -------------- | ---------------------------------------------- |
+| PNG            | Visual or demonstration output                 |
+| DesignSpec     | Editable structured design description         |
+| manifest       | Asset sources, hashes, and task records        |
+| quality report | Dimension, text, logo, and other check results |
+| summary        | Result summary for the Agent and user          |
 
-## 当前能力边界
+## Current capability boundaries
 
-### M1 已验证
+### Verified in M1
 
-- 单一源 `SKILL.md` 和 Agent Skills 格式校验
-- 统一 TypeScript CLI
-- JSON Schema 和类型生成
+- Single-source `SKILL.md` and Agent Skills format validation
+- Unified TypeScript CLI
+- JSON Schema and generated types
 - Mock Provider
-- Skill 安装、更新、状态检查和安全卸载
-- 失败退出码、路径边界、产物哈希和密钥扫描
-- Codex 的 Skill 发现、reference 读取和 Mock CLI fixture 全流程
+- Skill installation, update, status, and safe uninstall
+- Failure exit codes, path-boundary checks, artifact hashes, and secret scanning
+- Complete Skill discovery, reference loading, and Mock CLI fixture flow on Codex
 
-### 当前尚未承诺
+### Not yet promised
 
-- 真实图片 Provider 的可用模型、端点和费用
-- OpenAI Images API 的实际账号能力
-- 所有目标 Agent 的端到端运行通过
-- Windows、Linux 和 WSL 的实际兼容性
-- 真实商业项目的生产级视觉交付
+- Available models, endpoints, or pricing for a real image Provider
+- Actual OpenAI Images API account capabilities
+- End-to-end execution on every target Agent
+- Actual Windows, Linux, or WSL compatibility
+- Production-grade visual delivery for real commercial projects
 
-Mock Provider 返回 `provider.mock: true` 和 `needs_review`。不要把 Mock 产物当作真实生图结果或商业交付物。
+The Mock Provider returns `provider.mock: true` and `needs_review`. Do not present Mock outputs as real image-generation results or commercial deliverables.
 
-## 文档导航
+## Documentation
 
-- [30 秒快速开始](docs/QUICK_START.md)
-- [安装与 Agent 兼容性](docs/CROSS_AGENT_COMPATIBILITY.md)
-- [CLI 命令参考](skills/brand-visual-designer/references/cli-reference.md)
-- [DesignSpec 输入格式](docs/DESIGN_SPEC.md)
-- [架构说明](docs/ARCHITECTURE.md)
-- [验收测试与证据](docs/ACCEPTANCE_TESTS.md)
-- [路线图](docs/ROADMAP.md)
-- [项目背景](docs/PROJECT_CONTEXT.md)
-- [技术决策](docs/TECH_DECISIONS.md)
+- [Quick start](docs/QUICK_START.md)
+- [Installation and Agent compatibility](docs/CROSS_AGENT_COMPATIBILITY.md)
+- [CLI reference](skills/brand-visual-designer/references/cli-reference.md)
+- [DesignSpec format](docs/DESIGN_SPEC.md)
+- [Architecture](docs/ARCHITECTURE.md)
+- [Acceptance tests and evidence](docs/ACCEPTANCE_TESTS.md)
+- [Roadmap](docs/ROADMAP.md)
+- [Project context](docs/PROJECT_CONTEXT.md)
+- [Technical decisions](docs/TECH_DECISIONS.md)
+- [中文说明](README.zh-CN.md)
 
-## 仓库结构
+## Repository structure
 
 ```text
 brand-visual-agent/
-├── skills/brand-visual-designer/     # 唯一维护的 Skill 源文件
-├── packages/                         # CLI、Core、Installer、Provider、Schema
-├── brands/                           # 品牌档案和演示素材
-├── config/                           # Provider 配置示例
-├── examples/                         # DesignSpec 和任务示例
-├── outputs/                          # 演示输出
-├── tests/                            # 自动化测试和 fixtures
-└── docs/                             # 产品、架构、兼容性和验收文档
+├── skills/brand-visual-designer/     # The only maintained Skill source
+├── packages/                         # CLI, Core, Installer, Provider, Schema
+├── brands/                           # Brand profiles and demo assets
+├── config/                           # Provider configuration examples
+├── examples/                         # DesignSpec and task examples
+├── outputs/                          # Demonstration outputs
+├── tests/                            # Automated tests and fixtures
+└── docs/                             # Product, architecture, compatibility, and acceptance docs
 ```
 
-## 贡献
+## Contributing
 
-提交 Issue 或 Pull Request 前，请先阅读仓库中的 [AGENTS.md](AGENTS.md)，并确保修改后运行与变更相关的格式检查、类型检查和测试。不要提交 API 密钥、真实客户素材或未授权的 Logo。
+Before opening an Issue or Pull Request, read [AGENTS.md](AGENTS.md) and run the checks relevant to your change. Do not commit API keys, real customer assets, or unauthorized logos.
