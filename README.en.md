@@ -172,25 +172,23 @@ npx -y skills add vmee/brand-visual-agent \
   --yes
 ```
 
-To install for WorkBuddy:
+WorkBuddy users can upload `skills/brand-visual-designer.zip` through WorkBuddy's Skill marketplace, or install from source manually:
 
 ```bash
-# WorkBuddy project-level installation
-npx -y skills add vmee/brand-visual-agent \
-  --skill brand-visual-designer \
-  --agent workbuddy \
-  --yes
+git clone --depth 1 \
+  https://github.com/vmee/brand-visual-agent.git \
+  /tmp/brand-visual-agent
+
+mkdir -p ~/.workbuddy/skills
+
+cp -R \
+  /tmp/brand-visual-agent/skills/brand-visual-designer \
+  ~/.workbuddy/skills/brand-visual-designer
 ```
 
-To make the WorkBuddy Skill available across projects:
+Restart WorkBuddy after installation. For a project-level installation, use `.workbuddy/skills/brand-visual-designer` in the current project instead.
 
-```bash
-npx -y skills add vmee/brand-visual-agent \
-  --skill brand-visual-designer \
-  --agent workbuddy \
-  --global \
-  --yes
-```
+The current `skills` CLI does not list `workbuddy` as a valid Agent identifier, so do not use `--agent workbuddy`.
 
 The `skills` CLI installs to the current project by default. `--global` (or `-g`) installs for the user. Restart the Agent after installation.
 

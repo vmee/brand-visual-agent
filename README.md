@@ -172,25 +172,23 @@ npx -y skills add vmee/brand-visual-agent \
   --yes
 ```
 
-如果安装到 WorkBuddy：
+WorkBuddy 用户可以通过 WorkBuddy 的技能市场上传仓库中的 `skills/brand-visual-designer.zip`，也可以从源码手动安装：
 
 ```bash
-# WorkBuddy 项目级安装
-npx -y skills add vmee/brand-visual-agent \
-  --skill brand-visual-designer \
-  --agent workbuddy \
-  --yes
+git clone --depth 1 \
+  https://github.com/vmee/brand-visual-agent.git \
+  /tmp/brand-visual-agent
+
+mkdir -p ~/.workbuddy/skills
+
+cp -R \
+  /tmp/brand-visual-agent/skills/brand-visual-designer \
+  ~/.workbuddy/skills/brand-visual-designer
 ```
 
-如果希望 WorkBuddy 在所有项目中可用：
+安装后重新打开 WorkBuddy。项目级安装时，将目标目录改为当前项目下的 `.workbuddy/skills/brand-visual-designer`。
 
-```bash
-npx -y skills add vmee/brand-visual-agent \
-  --skill brand-visual-designer \
-  --agent workbuddy \
-  --global \
-  --yes
-```
+当前 `skills` CLI 的有效 Agent 列表不包含 `workbuddy`，因此不要使用 `--agent workbuddy`。
 
 `skills` CLI 默认安装到当前项目；`--global` 或 `-g` 才是用户级安装。安装完成后，请重新打开 Agent。
 
