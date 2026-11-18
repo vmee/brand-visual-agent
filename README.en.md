@@ -147,6 +147,8 @@ These images are demonstration outputs from the repository. They show the output
 | Wanshun We The People elder-care cover | <img src="docs/assets/gallery/wswm-jinglaoyue-xhs-cover.png" width="240" alt="Wanshun We The People elder-care cover"> |
 | Qinghe maternity-nanny pitfalls guide  | <img src="docs/assets/gallery/qinghe-xhs-pitfalls-cover.png" width="240" alt="Qinghe maternity-nanny pitfalls guide">  |
 
+See [sample brands and assets](docs/SAMPLE_ASSETS.md) for the rights boundary for the sample brand names, logos, profiles, and related materials. These assets are not licensed to users under the repository's code or Skill license.
+
 ## Install in 30 seconds
 
 ### Recommended: use the `skills` CLI
@@ -379,4 +381,4 @@ brand-visual-agent/
 
 ## Contributing
 
-Before opening an Issue or Pull Request, read [AGENTS.md](AGENTS.md) and run the checks relevant to your change. Do not commit API keys, real customer assets, or unauthorized logos.
+Before opening an Issue or Pull Request, read [AGENTS.md](AGENTS.md) and run the checks relevant to your change. Do not submit API keys, real customer assets without confirmation, or unauthorized logos.

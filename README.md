@@ -147,6 +147,8 @@ Skill 会通过 DesignSpec 和图层 ID记录修改范围。当前 M1 主要验�
 | 万顺为民敬老服务封面 | <img src="docs/assets/gallery/wswm-jinglaoyue-xhs-cover.png" width="240" alt="万顺为民敬老服务封面"> |
 | 青禾月嫂避坑指南     | <img src="docs/assets/gallery/qinghe-xhs-pitfalls-cover.png" width="240" alt="青禾月嫂避坑指南">     |
 
+示例品牌名称、Logo、品牌档案和相关素材的权利边界见[示例品牌与素材说明](docs/SAMPLE_ASSETS.md)。这些素材不随代码或 Skill 许可证授权给用户使用。
+
 ## 30 秒安装
 
 ### 推荐方式：使用 `skills` CLI
@@ -379,4 +381,4 @@ brand-visual-agent/
 
 ## 贡献
 
-提交 Issue 或 Pull Request 前，请先阅读仓库中的 [AGENTS.md](AGENTS.md)，并确保修改后运行与变更相关的格式检查、类型检查和测试。不要提交 API 密钥、真实客户素材或未授权的 Logo。
+提交 Issue 或 Pull Request 前，请先阅读仓库中的 [AGENTS.md](AGENTS.md)，并确保修改后运行与变更相关的格式检查、类型检查和测试。不要提交 API 密钥、未经确认的真实客户素材或未授权的 Logo。

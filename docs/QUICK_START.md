@@ -227,7 +227,7 @@ Logo：我会上传透明底 PNG
 - [万顺为民敬老服务封面](../docs/assets/gallery/wswm-jinglaoyue-xhs-cover.png)
 - [青禾月嫂避坑指南](../docs/assets/gallery/qinghe-xhs-pitfalls-cover.png)
 
-这些图片的用途是演示。发布前请根据当前版本的 Provider 状态判断是否可以用于真实视觉交付，不要把 Mock 产物描述成真实 AI 生图结果。
+这些图片的用途是演示。示例品牌和素材的权利边界见[示例品牌与素材说明](SAMPLE_ASSETS.md)。发布前请根据当前版本的 Provider 状态判断是否可以用于真实视觉交付，不要把 Mock 产物描述成真实 AI 生图结果。
 
 ## 9. 输出文件
 
